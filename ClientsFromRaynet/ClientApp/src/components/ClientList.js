@@ -23,6 +23,10 @@ const Styles = styled.div`
       }
     }
 
+    thead {
+      background: #00b6d4;
+    }
+
     th,
     td {
       margin: 0;
@@ -41,9 +45,37 @@ const Styles = styled.div`
 
   .loading-div {
   position: absolute;
-left:0;
-width: 100%; height: calc(100% - 145px); background: rgba(127, 127, 127, 0.3);
+left: 0;
+text-align: center;
+width: 100%;
   }
+.lds-dual-ring {
+  display: inline-block;
+  width: 80px;
+  height: 80px;
+  margin-top: 40px;
+}
+.lds-dual-ring:after {
+  content: " ";
+  display: block;
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+background: linear-gradient(white, #00b6d4, white);
+  border-radius: 50%;
+  border: 6px solid #00b6d4;
+  border-color: #00b6d4 transparent #00b6d4 transparent;
+  animation: lds-dual-ring 1.2s linear infinite;
+}
+@keyframes lds-dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 
 #search-box {
   margin-bottom: 16px;
@@ -51,13 +83,19 @@ width: 100%; height: calc(100% - 145px); background: rgba(127, 127, 127, 0.3);
 }
 `;
 
-
+let isFirstLoad = true;
 // #region Subcomponents
 
 /**
  * Table from react-table
  */
 function Table({ columns, data }) {
+
+  const sortedData = data.sort((a, b) => {
+    return a.name.localeCompare(b.name);
+  })
+  console.log('datata', data, 'sortedData', sortedData)
+
   const {
     getTableProps,
     getTableBodyProps,
@@ -67,14 +105,33 @@ function Table({ columns, data }) {
   } = useTable(
     {
       columns,
-      data,
+      data
     },
     useSortBy
   )
 
   // We don't want to render all 2000 rows for this example, so cap
   // it at 20 for this use case
-  const firstPageRows = rows.slice(0, 20)
+  //const firstPageRows = rows.slice(0, 20)
+  //console.log('columns', columns);
+  if (isFirstLoad) {
+    const nameColumn = (function () {
+      for (const h of headerGroups) {
+        for (const column of h.headers) {
+          if (column.id === 'name') {
+            return column;
+          }
+        }
+      }
+      return null;
+    })();
+    setTimeout(() => {
+      console.log('BOOM')
+      nameColumn.toggleSortBy();
+
+    }, 700)
+    isFirstLoad = false;
+  }
 
   return (
     <>
@@ -87,7 +144,7 @@ function Table({ columns, data }) {
                 // we can add them into the header props
                 <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                   {column.render('Header')}
-                  {/* Add a sort direction indicator */}
+                  {/* Add a sort direction indicator */ }
                   <span>
                     {column.isSorted
                       ? column.isSortedDesc
@@ -101,7 +158,7 @@ function Table({ columns, data }) {
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
-          {firstPageRows.map(
+          {rows.map(
             (row, i) => {
               prepareRow(row);
               return (
@@ -117,14 +174,12 @@ function Table({ columns, data }) {
           )}
         </tbody>
       </table>
-      <br />
-      <div>Showing the first 20 results of {rows.length} rows</div>
     </>
   )
 }
 
 function LoadingElement() {
-  const loadingElement = <div className="loading-div">Loading...</div>;
+  const loadingElement = <div className="loading-div"><div className="lds-dual-ring"></div></div>;
 
   return loadingElement;
 }
@@ -256,11 +311,8 @@ export function ClientList() {
   return (
     <Styles>
       <SearchBox />
-      <div>
-        <LoadingElement />
-        {isLoading && <LoadingElement />}
-        <Table columns={columns} data={companies} />
-      </div>
+      {isLoading && <LoadingElement />}
+      <Table columns={columns} data={companies} />
     </Styles>
   );
 }
