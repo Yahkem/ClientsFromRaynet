@@ -13,6 +13,7 @@ const Styles = styled.div`
   table {
     border-spacing: 0;
     border: 1px solid black;
+    width: 100%;
 
     tr {
       :last-child {
@@ -40,7 +41,8 @@ const Styles = styled.div`
 
   .loading-div {
   position: absolute;
-width:calc(100% - 100px); height: calc(100% - 120px); background: rgba(127, 127, 127, 0.3);
+left:0;
+width: 100%; height: calc(100% - 145px); background: rgba(127, 127, 127, 0.3);
   }
 
 #search-box {
@@ -48,6 +50,9 @@ width:calc(100% - 100px); height: calc(100% - 120px); background: rgba(127, 127,
 
 }
 `;
+
+
+// #region Subcomponents
 
 /**
  * Table from react-table
@@ -73,7 +78,7 @@ function Table({ columns, data }) {
 
   return (
     <>
-      <table {...getTableProps()}>
+      <table {...getTableProps()} id="clients-table">
         <thead>
           {headerGroups.map(headerGroup => (
             <tr {...headerGroup.getHeaderGroupProps()}>
@@ -118,117 +123,6 @@ function Table({ columns, data }) {
   )
 }
 
-/**
- * Main component
- * */
-export function ClientList() {
-  function getTableColumns() {
-    return React.useMemo(
-      () => [
-        {
-          Header: 'Název/jméno',
-          accessor: 'name',
-          Cell: (info) => {
-            const client = info.row.original;
-            const val = info.cell.value;
-            const url = "/company/" + client.id;
-
-            return (
-              <NavLink tag={Link} className="text-link"
-                to={{ pathname: url, state: client }}>
-                {val}
-              </NavLink>
-            );
-          }
-        },
-        {
-          Header: 'Stav',
-          accessor: 'state',
-          Cell: (info) => {
-            return enumDisplayString(info.cell.value, State);
-          }
-        },
-        {
-          Header: 'Vztah',
-          accessor: 'role',
-          Cell: (info) => {
-            return enumDisplayString(info.cell.value, Role);
-          }
-        },
-        {
-          Header: 'Rating',
-          accessor: 'rating',
-        },
-        {
-          Header: 'Vlastník',
-          accessor: 'owner.fullName',
-        },
-        {
-          Header: 'IČ',
-          accessor: 'regNumber',
-        },
-        {
-          Header: 'Město',
-          accessor: 'primaryAddress.address.city',
-        },
-        {
-          Header: 'Kategorie',
-          accessor: 'category.value',
-        },
-      ],
-    );
-  }
-
-  const [companies, setCompanies, deleteCompanies] = useStore('companies', []);
-  const [isLoading, setIsLoading, deleteIsLoading] = useStore('isLoading', false);
-  const [username, setUsername, deleteUsername] = useStore('username', 'risul.kubny@centrum.cz');
-  const [apiKey, setApiKey, deleteApiKey] = useStore('apiKey', 'crm-9c4fde5a37a847c79aae988a7b7528c7');
-
-  const columns = getTableColumns();
-  const url = 'https://app.raynet.cz/api/v2/company/';
-  //let [requests, setRequests] = useStore('requests', -1);
-
-  useEffect(() => {
-    async function fetchData(searchValue) {
-      //const username = 'risul.kubny@centrum.cz';
-      //const pw = 'crm-9c4fde5a37a847c79aae988a7b7528c7';
-      //const searchValue = document.getElementById('search-box').value;
-
-      setIsLoading(true);
-      console.log('seaasfsearchValue', searchValue)
-
-      const queryPart = searchValue !== null && searchValue !== '' ?
-        ('?fulltext=' + searchValue)
-        : '';
-
-      const response = await fetch(url + queryPart, {
-        method: 'GET',
-        headers: {
-          "X-Instance-Name": "taktozkusime",
-          'Authorization': 'Basic ' + btoa(username + ':' + apiKey),
-        },
-        timeout: 5000
-      });
-
-      const json = await response.json();
-
-      setCompanies(json.data);
-      setIsLoading(false);
-    }
-
-    fetchData(searchValue);
-  }, [searchValue]);
-
-  return (
-    <Styles>
-      <SearchBox />
-      {isLoading && <LoadingElement />}
-      <Table columns={columns} data={companies} />
-    </Styles>
-  );
-}
-
-
 function LoadingElement() {
   const loadingElement = <div className="loading-div">Loading...</div>;
 
@@ -237,7 +131,7 @@ function LoadingElement() {
 
 function SearchBox() {
   //const [searchValue, setSearchValue] = useState(searchValue2);
-  const [searchValue, setSearchValue, deleteSearchValue] = useStore('searchValue', null)
+  const [searchValue, setSearchValue, deleteSearchValue] = useStore('searchValue', null);
 
   let timeoutHandle = null;
   const debounceSearchValue = function (inputEl) {
@@ -254,4 +148,119 @@ function SearchBox() {
     onInput={(e) => { debounceSearchValue(e.target); }} />);
 
   return searchBoxInputEl;
+}
+
+// #endregion Subcomponents
+/**
+ * Main component
+ * */
+export function ClientList() {
+  const [searchValue, setSearchValue, deleteSearchValue] = useStore('searchValue', null);
+  const [companies, setCompanies, deleteCompanies] = useStore('companies', []);
+  const [isLoading, setIsLoading, deleteIsLoading] = useStore('isLoading', false);
+  const [username, setUsername, deleteUsername] = useStore('username', 'risul.kubny@centrum.cz');
+  const [apiKey, setApiKey, deleteApiKey] = useStore('apiKey', 'crm-9c4fde5a37a847c79aae988a7b7528c7');
+
+  async function fetchData() {
+    //const username = 'risul.kubny@centrum.cz';
+    //const pw = 'crm-9c4fde5a37a847c79aae988a7b7528c7';
+    //const searchValue = document.getElementById('search-box').value;
+
+    setIsLoading(true);
+    //toggleLoadingForTable(true, setIsLoading);
+    console.log('seaasfsearchValue', searchValue)
+
+    const queryPart = searchValue !== null && searchValue !== '' ?
+      ('?fulltext=' + searchValue)
+      : '';
+
+    const response = await fetch(url + queryPart, {
+      method: 'GET',
+      headers: {
+        "X-Instance-Name": "taktozkusime",
+        'Authorization': 'Basic ' + btoa(username + ':' + apiKey),
+      },
+      timeout: 5000
+    });
+
+    const json = await response.json();
+
+    setCompanies(json.data);
+    setIsLoading(false);
+    //toggleLoadingForTable(false, setIsLoading);
+  }
+
+  // Get table columns
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: 'Název/jméno',
+        accessor: 'name',
+        Cell: (info) => {
+          const client = info.row.original;
+          const val = info.cell.value;
+          const url = "/company/" + client.id;
+
+          return (
+            <NavLink tag={Link} className="text-link"
+              to={{ pathname: url, state: client }}>
+              {val}
+            </NavLink>
+          );
+        }
+      },
+      {
+        Header: 'Stav',
+        accessor: 'state',
+        Cell: (info) => {
+          return enumDisplayString(info.cell.value, State);
+        }
+      },
+      {
+        Header: 'Vztah',
+        accessor: 'role',
+        Cell: (info) => {
+          return enumDisplayString(info.cell.value, Role);
+        }
+      },
+      {
+        Header: 'Rating',
+        accessor: 'rating',
+      },
+      {
+        Header: 'Vlastník',
+        accessor: 'owner.fullName',
+      },
+      {
+        Header: 'IČ',
+        accessor: 'regNumber',
+      },
+      {
+        Header: 'Město',
+        accessor: 'primaryAddress.address.city',
+      },
+      {
+        Header: 'Kategorie',
+        accessor: 'category.value',
+      },
+    ],
+  );
+
+  const url = 'https://app.raynet.cz/api/v2/company/';
+  //let [requests, setRequests] = useStore('requests', -1);
+
+  useEffect(() => {
+    fetchData();
+  }, [searchValue]);
+
+  return (
+    <Styles>
+      <SearchBox />
+      <div>
+        <LoadingElement />
+        {isLoading && <LoadingElement />}
+        <Table columns={columns} data={companies} />
+      </div>
+    </Styles>
+  );
 }
