@@ -3,16 +3,17 @@ import { useTable, useSortBy } from 'react-table';
 import styled from 'styled-components';
 import { roleDisplayString, stateDisplayString, enumDisplayString, Role, State } from './../Enums';
 import { Collapse, Container, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
-import { Link } from 'react-router-dom';
+import { Link, useParams} from 'react-router-dom';
 import { useStore } from 'react-context-hook';
-
+import Modal from 'react-modal';
+import { ClientDetail } from './ClientDetail';
 
 const Styles = styled.div`
   padding: 1rem;
 
   table {
     border-spacing: 0;
-    border: 1px solid black;
+    border: none;
     width: 100%;
 
     tr {
@@ -25,14 +26,19 @@ const Styles = styled.div`
 
     thead {
       background: #00b6d4;
+      color: white;
+      font-weight: bold;
+      th:first-child { border-radius: 10px 0 0 0; }
+      th:last-child { border-radius: 0 10px 0 0; }
     }
 
     th,
     td {
       margin: 0;
       padding: 0.5rem;
-      border-bottom: 1px solid black;
-      border-right: 1px solid black;
+      border-bottom: 1px solid grey;
+      border-right: none;
+      border-left: none;
       max-width: 21rem;
       overflow-x: hidden;
       text-overflow: ellipsis;
@@ -44,46 +50,89 @@ const Styles = styled.div`
   }
 
   .loading-div {
-  position: absolute;
-left: 0;
-text-align: center;
-width: 100%;
+    position: absolute;
+    left: 0;
+    text-align: center;
+    width: 100%;
   }
-.lds-dual-ring {
-  display: inline-block;
-  width: 80px;
-  height: 80px;
-  margin-top: 40px;
-}
-.lds-dual-ring:after {
-  content: " ";
-  display: block;
-  width: 64px;
-  height: 64px;
-  margin: 8px;
-background: linear-gradient(white, #00b6d4, white);
-  border-radius: 50%;
-  border: 6px solid #00b6d4;
-  border-color: #00b6d4 transparent #00b6d4 transparent;
-  animation: lds-dual-ring 1.2s linear infinite;
-}
-@keyframes lds-dual-ring {
-  0% {
-    transform: rotate(0deg);
+  .lds-dual-ring {
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+    margin-top: 40px;
   }
-  100% {
-    transform: rotate(360deg);
+  .lds-dual-ring:after {
+    content: " ";
+    display: block;
+    width: 64px;
+    height: 64px;
+    margin: 8px;
+  background: linear-gradient(white, #00b6d4, white);
+    border-radius: 50%;
+    border: 6px solid #00b6d4;
+    border-color: #00b6d4 transparent #00b6d4 transparent;
+    animation: lds-dual-ring 1.2s linear infinite;
   }
-}
+  @keyframes lds-dual-ring {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
 
 
 #search-box {
   margin-bottom: 16px;
+  border: 2px solid grey;
+  border-radius: 10px;
+font-size: 18px;
 
+  :focus {
+    border: none;
+  }
+}
+
+td > .nav-link {
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+tbody {
+  tr[role="row"] {
+    :nth-child(odd) {
+      background: rgb(255, 255, 255);
+    }
+    :nth-child(even) {
+      background: rgb(230, 230, 230);
+    }
+    :hover {
+      background: #e0fcd4;
+    }
+  }
+}
+
+.text-link {
+  :hover {
+    text-decoration: underline;
+  }
 }
 `;
 
+const customModalStyles = {
+  content: {
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)'
+  }
+};
+
 let isFirstLoad = true;
+
 // #region Subcomponents
 
 /**
@@ -91,10 +140,10 @@ let isFirstLoad = true;
  */
 function Table({ columns, data }) {
 
-  const sortedData = data.sort((a, b) => {
-    return a.name.localeCompare(b.name);
-  })
-  console.log('datata', data, 'sortedData', sortedData)
+  //const sortedData = data.sort((a, b) => {
+  //  return a.name.localeCompare(b.name);
+  //})
+  //console.log('datata', data, 'sortedData', sortedData)
 
   const {
     getTableProps,
@@ -115,6 +164,8 @@ function Table({ columns, data }) {
   //const firstPageRows = rows.slice(0, 20)
   //console.log('columns', columns);
   if (isFirstLoad) {
+    isFirstLoad = false;
+
     const nameColumn = (function () {
       for (const h of headerGroups) {
         for (const column of h.headers) {
@@ -125,12 +176,10 @@ function Table({ columns, data }) {
       }
       return null;
     })();
-    setTimeout(() => {
-      console.log('BOOM')
-      nameColumn.toggleSortBy();
 
-    }, 700)
-    isFirstLoad = false;
+    if (nameColumn) {
+      setTimeout(() => { nameColumn.toggleSortBy(); }, 700);
+    }
   }
 
   return (
@@ -198,7 +247,7 @@ function SearchBox() {
   }
 
   const searchBoxInputEl = (<input type="text"
-    placeholder="Hledat 🔍"
+    placeholder="🔍 Hledat"
     id="search-box"
     onInput={(e) => { debounceSearchValue(e.target); }} />);
 
@@ -206,30 +255,30 @@ function SearchBox() {
 }
 
 // #endregion Subcomponents
+
+
 /**
  * Main component
  * */
 export function ClientList() {
+  const { clientId } = useParams(); console.log('clientIdOPAPAARAMASSS AFDFD', clientId);
   const [searchValue, setSearchValue, deleteSearchValue] = useStore('searchValue', null);
   const [companies, setCompanies, deleteCompanies] = useStore('companies', []);
   const [isLoading, setIsLoading, deleteIsLoading] = useStore('isLoading', false);
+  const [isModalOpened, setIsModalOpened, deleteIsModalOpened] = useStore('isModalOpened', clientId !== void 0);
   const [username, setUsername, deleteUsername] = useStore('username', 'risul.kubny@centrum.cz');
   const [apiKey, setApiKey, deleteApiKey] = useStore('apiKey', 'crm-9c4fde5a37a847c79aae988a7b7528c7');
+  const [appUrl, setAppUrl, deleteAppUrl] = useStore('appUrl', 'https://app.raynet.cz/api/v2/company/');
 
   async function fetchData() {
-    //const username = 'risul.kubny@centrum.cz';
-    //const pw = 'crm-9c4fde5a37a847c79aae988a7b7528c7';
-    //const searchValue = document.getElementById('search-box').value;
-
     setIsLoading(true);
-    //toggleLoadingForTable(true, setIsLoading);
     console.log('seaasfsearchValue', searchValue)
 
     const queryPart = searchValue !== null && searchValue !== '' ?
       ('?fulltext=' + searchValue)
       : '';
 
-    const response = await fetch(url + queryPart, {
+    const response = await fetch(appUrl + queryPart, {
       method: 'GET',
       headers: {
         "X-Instance-Name": "taktozkusime",
@@ -242,7 +291,6 @@ export function ClientList() {
 
     setCompanies(json.data);
     setIsLoading(false);
-    //toggleLoadingForTable(false, setIsLoading);
   }
 
   // Get table columns
@@ -254,11 +302,14 @@ export function ClientList() {
         Cell: (info) => {
           const client = info.row.original;
           const val = info.cell.value;
-          const url = "/company/" + client.id;
+          const url = "/client/" + client.id;
 
           return (
             <NavLink tag={Link} className="text-link"
-              to={{ pathname: url, state: client }}>
+              to={{ pathname: url, state: client }}
+              onClick={() => {
+                setIsModalOpened(true);
+              }}>
               {val}
             </NavLink>
           );
@@ -301,9 +352,6 @@ export function ClientList() {
     ],
   );
 
-  const url = 'https://app.raynet.cz/api/v2/company/';
-  //let [requests, setRequests] = useStore('requests', -1);
-
   useEffect(() => {
     fetchData();
   }, [searchValue]);
@@ -311,8 +359,23 @@ export function ClientList() {
   return (
     <Styles>
       <SearchBox />
+
       {isLoading && <LoadingElement />}
       <Table columns={columns} data={companies} />
+
+      <Modal
+        isOpen={isModalOpened}
+        style={customModalStyles}
+        contentLabel="Client info modal">
+        <div className="container">
+          <div className="row">
+            TODO name of client
+            <button onClick={() => { setIsModalOpened(false); }}>X</button>
+          </div>
+        </div>
+        <hr />
+        <ClientDetail clientId={clientId} />
+      </Modal>
     </Styles>
   );
 }
