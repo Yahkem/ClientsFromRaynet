@@ -1,5 +1,6 @@
 ﻿import React, { useEffect } from 'react';
 import { useStore } from 'react-context-hook';
+import { enumDisplayString, Role, State, colorHexForState } from './../Enums';
 
 export function ClientDetail({ clientId }) {
   const [username, setUsername, deleteUsername] = useStore('username', 'risul.kubny@centrum.cz');
@@ -58,7 +59,7 @@ export function ClientDetail({ clientId }) {
    * Helper for date display
    */
   const formatDate = (dt) => {
-    if (!!dt) {
+    if (!dt) {
       return '–';
     }
 
@@ -66,6 +67,13 @@ export function ClientDetail({ clientId }) {
 
     return date.toLocaleDateString('cs-CZ');
   }
+
+  const ratingDisplay = (c) => {
+    return c === 'A' ? '&#9733;&#9733;&#9733;' :
+      c === 'B' ? '&#9733;&#9733;&#9734;' :
+        c === 'C' ? '&#9733;&#9734;&#9734;' :
+          '&#9734;&#9734;&#9734;';
+  };
 
   const companyInfo = !!selectedCompany ?
     (<>
@@ -79,12 +87,31 @@ export function ClientDetail({ clientId }) {
         </h2><br />
           <i>{selectedCompany.person ? "Fyzická osoba" : "Firma"}</i>
           <br />
-          Jméno:&nbsp;<strong>{d(selectedCompany.firstName)}</strong>&nbsp;
-          Příjmení:&nbsp;<strong>{d(selectedCompany.lastName)}</strong>
+        <span className="label-client">Jméno:&nbsp;</span>
+        <strong>{d(selectedCompany.firstName)}</strong>&nbsp;
+        <span className="label-client">Příjmení:&nbsp;</span>
+        <strong>{d(selectedCompany.lastName)}</strong>
         <br />
-        Narozeniny/Výročí:&nbsp;<strong>{formatDate(selectedCompany.birthday)}</strong>
+        <span className="label-client">Vlastník:&nbsp;</span>
+        <strong>{selectedCompany.owner && selectedCompany.owner.fullName && d(selectedCompany.owner.fullName)}</strong>
       </div>
       <br />
+      <span className="label-client">Stav:&nbsp;</span>
+      <span style={{ color: colorHexForState(selectedCompany.state) }}>
+        {enumDisplayString(selectedCompany.state, State)}
+      </span>
+      &emsp;
+      <span className="label-client">Vztah:&nbsp;</span>
+      <span>{enumDisplayString(selectedCompany.role, Role)}</span>
+      &emsp;
+      <span className="label-client">Rating:&nbsp;</span>
+      <span className="client-rating" dangerouslySetInnerHTML={{ __html: ratingDisplay(selectedCompany.rating) }}></span>
+      &emsp;
+      <span className="label-client">Narozeniny/Výročí:&nbsp;</span>
+      <strong>{formatDate(selectedCompany.birthday)}</strong>
+
+      <br />
+      <span className="label-client">Poznámka:</span>
       <div dangerouslySetInnerHTML={{ __html: selectedCompany.notice }}></div>
       <br />
       selectedCompany={JSON.stringify(selectedCompany, null, " ")}

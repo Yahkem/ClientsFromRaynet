@@ -29,3 +29,12 @@
     .modal-header-row > .col-x-btn {
         text-align: right;
     }
+
+.client-rating {
+    font-size: 1.3em;
+    color: gold;
+}
+
+.label-client {
+    color: #737c90;
+}

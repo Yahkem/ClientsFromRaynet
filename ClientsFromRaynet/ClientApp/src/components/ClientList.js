@@ -125,7 +125,7 @@ tbody {
 
 const customModalStyles = {
   content: {
-    top: '60%',
+    top: '48%',
     left: '50%',
     right: 'auto',
     bottom: 'auto',
@@ -302,7 +302,7 @@ export function ClientList() {
         Header: 'Stav',
         accessor: 'state',
         Cell: (info) => {
-          return (<span style={{ "color": colorHexForState(State[info.cell.value]) }}>
+          return (<span style={{ "color": colorHexForState(info.cell.value) }}>
             {enumDisplayString(info.cell.value, State)}
           </span>);
         }

@@ -28,10 +28,10 @@ export function enumDisplayString(strValue: string, enumType: any): string {
   return roleObj[strValue];
 }
 
-export function colorHexForState(s: State) {
-  console.log('sss', s);
+export function colorHexForState(strValue: string) {
   let color = '#';
-
+  //@ts-ignore
+  const s = State[strValue] as any;
   switch (s) {
     case State.A_POTENTIAL:
       color += 'C29500';
