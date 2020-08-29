@@ -1,7 +1,7 @@
 ﻿import React, { Component, useState, useEffect, setState, useCallback } from 'react';
 import { useTable, useSortBy } from 'react-table';
 import styled from 'styled-components';
-import { roleDisplayString, stateDisplayString, enumDisplayString, Role, State } from './../Enums';
+import { enumDisplayString, Role, State, colorHexForState } from './../Enums';
 import { Collapse, Container, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
 import { Link, useParams} from 'react-router-dom';
 import { useStore } from 'react-context-hook';
@@ -97,6 +97,7 @@ font-size: 18px;
 td > .nav-link {
   text-overflow: ellipsis;
   overflow: hidden;
+  font-weight: 600;
 }
 
 tbody {
@@ -118,16 +119,18 @@ tbody {
     text-decoration: underline;
   }
 }
+
+
 `;
 
 const customModalStyles = {
   content: {
-    top: '50%',
+    top: '60%',
     left: '50%',
     right: 'auto',
     bottom: 'auto',
     marginRight: '-50%',
-    transform: 'translate(-50%, -50%)'
+    transform: 'translate(-50%, -50%)',
   }
 };
 
@@ -269,29 +272,7 @@ export function ClientList() {
   const [username, setUsername, deleteUsername] = useStore('username', 'risul.kubny@centrum.cz');
   const [apiKey, setApiKey, deleteApiKey] = useStore('apiKey', 'crm-9c4fde5a37a847c79aae988a7b7528c7');
   const [appUrl, setAppUrl, deleteAppUrl] = useStore('appUrl', 'https://app.raynet.cz/api/v2/company/');
-
-  async function fetchData() {
-    setIsLoading(true);
-    console.log('seaasfsearchValue', searchValue)
-
-    const queryPart = searchValue !== null && searchValue !== '' ?
-      ('?fulltext=' + searchValue)
-      : '';
-
-    const response = await fetch(appUrl + queryPart, {
-      method: 'GET',
-      headers: {
-        "X-Instance-Name": "taktozkusime",
-        'Authorization': 'Basic ' + btoa(username + ':' + apiKey),
-      },
-      timeout: 5000
-    });
-
-    const json = await response.json();
-
-    setCompanies(json.data);
-    setIsLoading(false);
-  }
+  const [selectedCompany, setSelectedCompany, deleteSelectedCompany] = useStore('selectedCompany', null);
 
   // Get table columns
   const columns = React.useMemo(
@@ -308,6 +289,8 @@ export function ClientList() {
             <NavLink tag={Link} className="text-link"
               to={{ pathname: url, state: client }}
               onClick={() => {
+                console.log('XXX',client)
+                setSelectedCompany(client);
                 setIsModalOpened(true);
               }}>
               {val}
@@ -319,7 +302,9 @@ export function ClientList() {
         Header: 'Stav',
         accessor: 'state',
         Cell: (info) => {
-          return enumDisplayString(info.cell.value, State);
+          return (<span style={{ "color": colorHexForState(State[info.cell.value]) }}>
+            {enumDisplayString(info.cell.value, State)}
+          </span>);
         }
       },
       {
@@ -353,6 +338,29 @@ export function ClientList() {
   );
 
   useEffect(() => {
+    async function fetchData() {
+      setIsLoading(true);
+      console.log('seaasfsearchValue', searchValue)
+
+      const queryPart = searchValue !== null && searchValue !== '' ?
+        ('?fulltext=' + searchValue)
+        : '';
+
+      const response = await fetch(appUrl + queryPart, {
+        method: 'GET',
+        headers: {
+          "X-Instance-Name": "taktozkusime",
+          'Authorization': 'Basic ' + btoa(username + ':' + apiKey),
+        },
+        timeout: 5000
+      });
+
+      const json = await response.json();
+
+      setCompanies(json.data);
+      setIsLoading(false);
+    }
+
     fetchData();
   }, [searchValue]);
 
@@ -366,11 +374,14 @@ export function ClientList() {
       <Modal
         isOpen={isModalOpened}
         style={customModalStyles}
+        onRequestClose={(e) => { setIsModalOpened(false); }}
         contentLabel="Client info modal">
         <div className="container">
-          <div className="row">
-            TODO name of client
-            <button onClick={() => { setIsModalOpened(false); }}>X</button>
+          <div className="row modal-header-row">
+            <div className="col-md-11">{selectedCompany && <span>Detail klienta</span>}</div>
+            <div className="col-md-1 col-x-btn">
+              <button id="close-modal-btn" onClick={() => { setIsModalOpened(false); }}>X</button>
+            </div>
           </div>
         </div>
         <hr />

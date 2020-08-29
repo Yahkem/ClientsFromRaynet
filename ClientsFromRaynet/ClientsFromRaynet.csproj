@@ -9,6 +9,7 @@
 	<AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
     <AspNetCoreModuleName>AspNetCoreModule</AspNetCoreModuleName>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
+    <UserSecretsId>023560f4-0528-4da3-b93a-a6ef58a071f7</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

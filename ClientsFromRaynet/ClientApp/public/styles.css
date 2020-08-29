@@ -5,3 +5,27 @@
 #nav-logo-text {
     font-size: 1.7rem;
 }
+
+#close-modal-btn {
+    border: none;
+    font-size: 20px;
+    margin: 0;
+    width: 32px;
+    border-radius: 100px;
+    background: white;
+    color: black;
+    transition: 0.4s;
+}
+    #close-modal-btn:hover {
+        background: black;
+        color: white;
+    }
+
+.modal-header-row {
+    font-size: 20px;
+    -webkit-justify-content: space-between;
+    justify-content: space-between;
+}
+    .modal-header-row > .col-x-btn {
+        text-align: right;
+    }
