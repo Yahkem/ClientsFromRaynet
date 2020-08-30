@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="ClientApp\public\socialnet\" />
     <Folder Include="Controllers\" />
   </ItemGroup>
 
