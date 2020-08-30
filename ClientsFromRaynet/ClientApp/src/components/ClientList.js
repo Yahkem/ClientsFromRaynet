@@ -11,45 +11,45 @@ import { getColorForCategory } from '../Helpers';
 import { LoadingElement, SearchBox } from './Subcomponents';
 
 const Styles = styled.div`
-  padding: 1rem;
+padding: 1rem;
 
-  table {
-    border-spacing: 0;
-    border: none;
-    width: 100%;
+table {
+  border-spacing: 0;
+  border: none;
+  width: 100%;
 
-    tr {
-      :last-child {
-        td {
-          border-bottom: 0;
-        }
-      }
-    }
-
-    thead {
-      background: #00b6d4;
-      color: white;
-      font-weight: bold;
-      th:first-child { border-radius: 10px 0 0 0; }
-      th:last-child { border-radius: 0 10px 0 0; }
-    }
-
-    th,
-    td {
-      margin: 0;
-      padding: 0.5rem;
-      border-bottom: 1px solid grey;
-      border-right: none;
-      border-left: none;
-      max-width: 21rem;
-      overflow-x: hidden;
-      text-overflow: ellipsis;
-
-      :last-child {
-        border-right: 0;
+  tr {
+    :last-child {
+      td {
+        border-bottom: 0;
       }
     }
   }
+
+  thead {
+    background: #00b6d4;
+    color: white;
+    font-weight: bold;
+    th:first-child { border-radius: 10px 0 0 0; }
+    th:last-child { border-radius: 0 10px 0 0; }
+  }
+
+  th,
+  td {
+    margin: 0;
+    padding: 0.5rem;
+    border-bottom: 1px solid grey;
+    border-right: none;
+    border-left: none;
+    max-width: 21rem;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+
+    :last-child {
+      border-right: 0;
+    }
+  }
+}
 
 
 #search-box {
@@ -93,6 +93,9 @@ tbody {
 }
 `;
 
+/**
+ * Style object for Modal
+ * */
 const customModalStyles = {
   content: {
     top: '46%',
@@ -104,13 +107,8 @@ const customModalStyles = {
   }
 };
 
-let isFirstLoad = true;
-let companyCategories = [];
-
-// #region Subcomponents
-
 /**
- * Table from react-table
+ * Table component using react-table
  */
 function Table({ columns, data }) {
 
@@ -131,6 +129,7 @@ function Table({ columns, data }) {
   );
 
   if (isFirstLoad) {
+    // default sort by name
     isFirstLoad = false;
 
     const nameColumn = (function () {
@@ -195,10 +194,11 @@ function Table({ columns, data }) {
   )
 }
 
-// #endregion Subcomponents
+let isFirstLoad = true;
+let companyCategories = [];
 
 /**
- * Main component
+ * Main clients component
  * */
 export function ClientList() {
   const { clientId } = useParams();
@@ -213,6 +213,7 @@ export function ClientList() {
   const [categories, setCategories] = useStore('categories', companyCategories);
 
   if (isFirstLoad) {
+    // Load company categories
     const categoriesUrl = 'https://app.raynet.cz/api/v2/companyCategory/';
 
     async function fetchCategories() {
@@ -235,6 +236,7 @@ export function ClientList() {
     fetchCategories();
   }
 
+  // Sorting functions for enums
   const sortState = React.useMemo(
     () => {
       return function (rowA, rowB) {

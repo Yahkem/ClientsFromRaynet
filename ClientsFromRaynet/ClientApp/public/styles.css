@@ -70,7 +70,7 @@
     }
 
 .social-row {
-    margin: 20px auto 0 auto;
+    margin: 16px auto 0 auto;
     display: flex;
     width: 700px !important;
     justify-content: space-around;
@@ -218,7 +218,7 @@
     padding-top: 50px;
     font-style: italic;
     border: 1px solid rgba(190, 190, 190, 1);
-    background: rgb(230, 230, 230);
+    background: rgb(240, 240, 240);
     border-radius: 4px;
 }
 .client-image {
@@ -241,4 +241,9 @@ h2.client-name {
     height: 160px;
     max-width: 500px;
     padding-left: 8px;
+}
+
+.show-on-map-link {
+    display: inline-block;
+    padding-bottom: 4px;
 }

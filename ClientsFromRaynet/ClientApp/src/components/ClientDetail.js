@@ -1,8 +1,10 @@
 ﻿import React, { useEffect } from 'react';
 import { useStore } from 'react-context-hook';
-import { enumDisplayString, Role, State, colorHexForState } from './../Enums';
-import { getColorForCategory, ratingDisplay, d, formatDate, formatYesNo, formatValueObj, formatLatLng } from '../Helpers';
-import { LoadingElement, AddressesInfo } from './Subcomponents';
+import { ratingDisplay, d } from '../Helpers';
+import { LoadingElement } from './Subcomponents';
+import { SocialNetworkContacts } from './SocialNetworkContacts';
+import { AddressesInfo } from './AddressesInfo';
+import { BasicInfoRow } from './BasicInfoRow';  
 
 
 export function ClientDetail({ clientId }) {
@@ -55,17 +57,6 @@ export function ClientDetail({ clientId }) {
     fetchData();
   }, [clientId]);
 
-  
-
-  const categoryColor = selectedCompany && selectedCompany.category && selectedCompany.category.value ?
-    getColorForCategory(selectedCompany.category.value, categories)
-    : null;
-
-  console.log('selectedCompany', selectedCompany);
-  const socNetData = (!!selectedCompany && selectedCompany.socialNetworkContact) ?
-    selectedCompany.socialNetworkContact
-    : {};
-
   const companyInfo = !!selectedCompany ?
     (<>
       <div className="client-logo-wrapper">
@@ -100,82 +91,8 @@ export function ClientDetail({ clientId }) {
       <hr />
 
       <h4>Základní údaje</h4>
-      <div className="row">
-        <div className="col-sm-6">
-
-          <span className="label-client">Stav:&nbsp;</span>
-          <span style={{ color: colorHexForState(selectedCompany.state) }}>
-            {enumDisplayString(selectedCompany.state, State)}
-          </span><br />
-          <span className="label-client">Vztah:&nbsp;</span>
-          <span>{enumDisplayString(selectedCompany.role, Role)}</span><br />
-
-          <span className="label-client">Kategorie:&nbsp;</span>
-          <span style={{ backgroundColor: '#' + categoryColor }}
-            className="category-cell">
-            {formatValueObj(selectedCompany.category)}
-          </span><br />
-
-          <span className="label-client">Obor:&nbsp;</span>
-          <span>{formatValueObj(selectedCompany.economyActivity)}</span><br />
-
-          <span className="label-client">Zdroj kontaktu:&nbsp;</span>
-          <span>{formatValueObj(selectedCompany.contactSource)}</span><br />
-
-          <span className="label-client">IČ:&nbsp;</span>
-          <span>{selectedCompany.regNumber}</span><br />
-
-          <span className="label-client">DIČ:&nbsp;</span>
-          <span>{selectedCompany.taxNumber}</span><br />
-        </div>
-        <div className="col-sm-6">
-          <span className="label-client">Oslovení:&nbsp;</span>
-          <span>{selectedCompany.salutation}</span><br />
-
-          <span className="label-client">Obrat:&nbsp;</span>
-          <span>{formatValueObj(selectedCompany.turnover)}</span><br />
-
-          <span className="label-client">Zaměstnanců:&nbsp;</span>
-          <span>{formatValueObj(selectedCompany.employeesNumber)}</span><br />
-
-          <span className="label-client">Bankovní spojení:&nbsp;</span>
-          <span>{selectedCompany.bankAccount}</span><br />
-
-          <span className="label-client">Platební podmínky:&nbsp;</span>
-          <span>{formatValueObj(selectedCompany.paymentTerm)}</span><br />
-
-          <span className="label-client">Plátce DPH:&nbsp;</span>
-          <span>{formatYesNo(selectedCompany.taxPayer)}</span><br />
-
-          <span className="label-client">Narozeniny/výročí:&nbsp;</span>
-          <span>{formatDate(selectedCompany.birthday)}</span>
-        </div>
-        <div className="row">
-          <div className="col-sm-6 col-sm-offset-3 social-row">
-            <div className={"icon-social icon-fb" + (socNetData.facebook ? ' icon-active' : '')}>
-              {socNetData.facebook && <a href={socNetData.facebook }></a>}
-            </div>
-            <div className={"icon-social icon-twitter" + (socNetData.twitter ? ' icon-active' : '')}>
-              {socNetData.twitter && <a href={socNetData.twitter}></a>}
-            </div>
-            <div className={"icon-social icon-linkedin" + (socNetData.linkedin ? ' icon-active' : '')}>
-              {socNetData.linkedin && <a href={socNetData.linkedin}></a>}
-            </div>
-            <div className={"icon-social icon-pinterest" + (socNetData.pinterest ? ' icon-active' : '')}>
-              {socNetData.pinterest && <a href={socNetData.pinterest}></a>}
-            </div>
-            <div className={"icon-social icon-instagram" + (socNetData.instagram ? ' icon-active' : '')}>
-              {socNetData.instagram && <a href={socNetData.instagram}></a>}
-            </div>
-            <div className={"icon-social icon-skype" + (socNetData.skype ? ' icon-active' : '')}>
-              {socNetData.skype && <a href={"skype:" + socNetData.skype + "?chat"}></a>}
-            </div>
-            <div className={"icon-social icon-yt" + (socNetData.youtube ? ' icon-active' : '')}>
-              {socNetData.youtube && <a href={socNetData.youtube}></a>}
-            </div>
-          </div>
-        </div>
-      </div>
+      <BasicInfoRow client={selectedCompany} categories={categories} />
+      <SocialNetworkContacts client={selectedCompany} />
       <hr />
 
       <h4>Adresy a kontakty</h4>
@@ -195,7 +112,7 @@ export function ClientDetail({ clientId }) {
       {
         isDetailLoading ? <LoadingElement /> :
           companyImageData === null ?
-            (<div class="no-client-image">Klient nemá žádný obrázek</div>)
+            (<div className="no-client-image">Klient nemá žádný obrázek</div>)
           : (<img src={companyImageData} alt="Obrázek/logo klienta" className="client-image" width="160" height="160" />)
       }
       {companyInfo}
