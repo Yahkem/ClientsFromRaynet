@@ -87,12 +87,15 @@ const Styles = styled.div`
 
 #search-box {
   margin-bottom: 16px;
-  border: 2px solid grey;
+  border: 1px solid rgb(100, 100, 100);
+  padding-left: 8px;
   border-radius: 10px;
-font-size: 18px;
+  font-size: 18px;
 
   :focus {
-    border: none;
+    border-radius: 10px;
+    box-shadow: none;
+    outline: 0 none;
   }
 }
 
