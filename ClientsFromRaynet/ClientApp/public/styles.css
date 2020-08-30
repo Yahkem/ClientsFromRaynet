@@ -5,3 +5,211 @@
 #nav-logo-text {
     font-size: 1.7rem;
 }
+
+#close-modal-btn {
+    border: none;
+    font-size: 20px;
+    margin: 0;
+    width: 24px;
+    height: 24px;
+    line-height: 0;
+    border-radius: 100px;
+    background: white;
+    color: black;
+    transition: 0.4s;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    padding-left: 4px;
+    padding-bottom: 3px;
+}
+    #close-modal-btn:hover {
+        background: red;
+        color: black;
+    }
+
+.modal-header-row {
+    height: 10px;
+    font-size: 20px;
+    -webkit-justify-content: space-between;
+    justify-content: space-between;
+}
+    .modal-header-row > .col-x-btn {
+        text-align: right;
+    }
+
+.client-rating {
+    top: -9px;
+    font-size: 1.5em;
+    position: absolute;
+    color: gold;
+}
+
+.label-client {
+    color: #737c90;
+}
+
+.col-addr {
+    margin-bottom: 12px;
+}
+
+.notice {
+    border: 1px solid rgba(150,150,150,0.5);
+    min-height: 26px;
+    padding: 4px 6px 2px 6px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.modal-detail-body {
+    width: 680px;
+    height: 680px;
+}
+    .modal-detail-body hr {
+        margin: 0.75rem 0;
+    }
+
+.social-row {
+    margin: 20px auto 0 auto;
+    display: flex;
+    width: 700px !important;
+    justify-content: space-around;
+    flex-wrap: nowrap;
+}
+.icon-social {
+    width: 36px;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 40px;
+    background-size: contain;
+    opacity: .5;
+}
+    .icon-social.icon-active:hover {
+        opacity: 1;
+    }
+    .icon-social > a {
+        display: block;
+        width: 100%;
+        height: 100%;
+    }
+    .icon-fb {
+        background-image: url('socialnet/fb_off.svg');
+    }
+    .icon-twitter {
+        background-image: url('socialnet/twitter_off.svg');
+    }
+    .icon-linkedin {
+        background-image: url('socialnet/linkedin_off.svg');
+    }
+    .icon-pinterest {
+        background-image: url('socialnet/pinterest_off.svg');
+    }
+    .icon-instagram {
+        background-image: url('socialnet/ig_off.svg');
+    }
+    .icon-skype {
+        background-image: url('socialnet/skype_off.svg');
+    }
+    .icon-yt {
+        background-image: url('socialnet/yt_off.svg');
+    }
+    .icon-fb.icon-active {
+        background-image: url('socialnet/fb_on.svg');
+    }
+
+    .icon-twitter.icon-active {
+        background-image: url('socialnet/twitter_on.svg');
+    }
+
+    .icon-linkedin.icon-active {
+        background-image: url('socialnet/linkedin_on.svg');
+    }
+
+    .icon-pinterest.icon-active {
+        background-image: url('socialnet/pinterest_on.svg');
+    }
+
+    .icon-instagram.icon-active {
+        background-image: url('socialnet/ig_on.svg');
+    }
+
+    .icon-skype.icon-active {
+        background-image: url('socialnet/skype_on.svg');
+    }
+
+    .icon-yt.icon-active {
+        background-image: url('socialnet/yt_on.svg');
+    }
+
+.category-cell {
+    border-radius: 30px;
+    display: inline-block;
+    padding: 0 10px 2px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+@media (min-width: 1200px) {
+    #table-container, #nav-container {
+        max-width: 1150px;
+        /*margin-left: 60px;*/
+    }
+}
+@media (min-width: 1500px) {
+    #table-container, #nav-container {
+        max-width: 1400px;
+    }
+}
+@media (min-width: 1100px) and (max-width: 1200px) {
+    #table-container, #nav-container {
+        /*max-width: 1150px;*/
+        max-width: 1150px;
+        margin-left: 10px;
+    }
+}
+
+@media (max-width: 1100px) {
+    #table-container, #nav-container {
+        /*max-width: 1150px;*/
+        /*max-width: 1050px;*/
+        margin-left: 0;
+        padding-left: 0;
+    }
+}
+
+.loading-div {
+    position: absolute;
+    left: 0;
+    text-align: center;
+    width: 100%;
+}
+
+.lds-dual-ring {
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+    margin-top: 80px;
+}
+
+    .lds-dual-ring:after {
+        content: " ";
+        display: block;
+        width: 64px;
+        height: 64px;
+        margin: 8px;
+        background: transparent;
+        border-radius: 50%;
+        border: 6px solid #00b6d4;
+        border-color: #00b6d4 transparent #00b6d4 transparent;
+        animation: lds-dual-ring 1.2s linear infinite;
+    }
+
+@keyframes lds-dual-ring {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}

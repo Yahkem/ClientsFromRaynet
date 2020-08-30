@@ -6,6 +6,11 @@ import { ClientList } from './components/ClientList';
 
 import './custom.css'
 
+import Modal from 'react-modal';
+
+// Make sure to bind modal to your appElement (http://reactcommunity.org/react-modal/accessibility/)
+Modal.setAppElement('#root')
+
 class App extends Component {
   static displayName = App.name;
 
@@ -13,6 +18,8 @@ class App extends Component {
     return (
       <Layout>
         <Route exact path='/' component={ClientList} />
+        <Route exact path='/client' component={ClientList} />
+        <Route path='/client/:clientId' component={ClientList} />
       </Layout>
     );
   }
