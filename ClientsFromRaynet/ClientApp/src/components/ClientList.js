@@ -1,8 +1,8 @@
-﻿import React, { Component, useState, useEffect, setState, useCallback } from 'react';
+﻿import React, { useEffect } from 'react';
 import { useTable, useSortBy } from 'react-table';
 import styled from 'styled-components';
 import { enumDisplayString, Role, State, colorHexForState } from './../Enums';
-import { Collapse, Container, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
+import { NavLink } from 'reactstrap';
 import { Link, useParams} from 'react-router-dom';
 import { useStore } from 'react-context-hook';
 import Modal from 'react-modal';
@@ -143,11 +143,6 @@ let isFirstLoad = true;
  */
 function Table({ columns, data }) {
 
-  //const sortedData = data.sort((a, b) => {
-  //  return a.name.localeCompare(b.name);
-  //})
-  //console.log('datata', data, 'sortedData', sortedData)
-
   const {
     getTableProps,
     getTableBodyProps,
@@ -160,12 +155,8 @@ function Table({ columns, data }) {
       data
     },
     useSortBy
-  )
+  );
 
-  // We don't want to render all 2000 rows for this example, so cap
-  // it at 20 for this use case
-  //const firstPageRows = rows.slice(0, 20)
-  //console.log('columns', columns);
   if (isFirstLoad) {
     isFirstLoad = false;
 
@@ -238,14 +229,13 @@ function LoadingElement() {
 
 function SearchBox() {
   //const [searchValue, setSearchValue] = useState(searchValue2);
-  const [searchValue, setSearchValue, deleteSearchValue] = useStore('searchValue', null);
+  const [searchValue, setSearchValue] = useStore('searchValue', null);
 
   let timeoutHandle = null;
   const debounceSearchValue = function (inputEl) {
     clearTimeout(timeoutHandle);
     timeoutHandle = setTimeout(() => {
       setSearchValue(inputEl.value);
-      console.log('setting...', inputEl.value, 'storeValue=', searchValue)
     }, 700);
   }
 
@@ -264,15 +254,15 @@ function SearchBox() {
  * Main component
  * */
 export function ClientList() {
-  const { clientId } = useParams(); console.log('clientIdOPAPAARAMASSS AFDFD', clientId);
-  const [searchValue, setSearchValue, deleteSearchValue] = useStore('searchValue', null);
-  const [companies, setCompanies, deleteCompanies] = useStore('companies', []);
-  const [isLoading, setIsLoading, deleteIsLoading] = useStore('isLoading', false);
-  const [isModalOpened, setIsModalOpened, deleteIsModalOpened] = useStore('isModalOpened', clientId !== void 0);
-  const [username, setUsername, deleteUsername] = useStore('username', 'risul.kubny@centrum.cz');
-  const [apiKey, setApiKey, deleteApiKey] = useStore('apiKey', 'crm-9c4fde5a37a847c79aae988a7b7528c7');
-  const [appUrl, setAppUrl, deleteAppUrl] = useStore('appUrl', 'https://app.raynet.cz/api/v2/company/');
-  const [selectedCompany, setSelectedCompany, deleteSelectedCompany] = useStore('selectedCompany', null);
+  const { clientId } = useParams();
+  const [searchValue] = useStore('searchValue', null);
+  const [companies, setCompanies] = useStore('companies', []);
+  const [isLoading, setIsLoading] = useStore('isLoading', false);
+  const [isModalOpened, setIsModalOpened] = useStore('isModalOpened', clientId !== void 0);
+  const [username] = useStore('username', 'risul.kubny@centrum.cz');
+  const [apiKey] = useStore('apiKey', 'crm-9c4fde5a37a847c79aae988a7b7528c7');
+  const [appUrl] = useStore('appUrl', 'https://app.raynet.cz/api/v2/company/');
+  const [selectedCompany, setSelectedCompany] = useStore('selectedCompany', null);
 
   // Get table columns
   const columns = React.useMemo(
@@ -289,7 +279,6 @@ export function ClientList() {
             <NavLink tag={Link} className="text-link"
               to={{ pathname: url, state: client }}
               onClick={() => {
-                console.log('XXX',client)
                 setSelectedCompany(client);
                 setIsModalOpened(true);
               }}>
@@ -335,12 +324,12 @@ export function ClientList() {
         accessor: 'category.value',
       },
     ],
+    []
   );
 
   useEffect(() => {
     async function fetchData() {
       setIsLoading(true);
-      console.log('seaasfsearchValue', searchValue)
 
       const queryPart = searchValue !== null && searchValue !== '' ?
         ('?fulltext=' + searchValue)
@@ -378,13 +367,9 @@ export function ClientList() {
         contentLabel="Client info modal">
         <div className="container">
           <div className="row modal-header-row">
-            <div className="col-md-11">{selectedCompany && <span>Detail klienta</span>}</div>
-            <div className="col-md-1 col-x-btn">
-              <button id="close-modal-btn" onClick={() => { setIsModalOpened(false); }}>X</button>
-            </div>
+            <button id="close-modal-btn" onClick={() => { setIsModalOpened(false); }}>&#10005;</button>
           </div>
         </div>
-        <hr />
         <ClientDetail clientId={clientId} />
       </Modal>
     </Styles>
