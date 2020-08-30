@@ -1,5 +1,7 @@
 ﻿import React, { useEffect } from 'react';
-import { useTable, useSortBy } from 'react-table';
+import {
+  useTable, useSortBy, useBlockLayout,
+  useResizeColumns } from 'react-table';
 import styled from 'styled-components';
 import { enumDisplayString, Role, State, colorHexForState } from './../Enums';
 import { NavLink } from 'reactstrap';
@@ -8,7 +10,7 @@ import { useStore } from 'react-context-hook';
 import Modal from 'react-modal';
 import { ClientDetail } from './ClientDetail';
 import { getColorForCategory, d, formatDate, formatYesNo, formatValueObj, formatLatLng } from '../Helpers';
-
+import { LoadingElement, SearchBox } from './Subcomponents';
 
 const Styles = styled.div`
   padding: 1rem;
@@ -48,39 +50,6 @@ const Styles = styled.div`
       :last-child {
         border-right: 0;
       }
-    }
-  }
-
-  .loading-div {
-    position: absolute;
-    left: 0;
-    text-align: center;
-    width: 100%;
-  }
-  .lds-dual-ring {
-    display: inline-block;
-    width: 80px;
-    height: 80px;
-    margin-top: 40px;
-  }
-  .lds-dual-ring:after {
-    content: " ";
-    display: block;
-    width: 64px;
-    height: 64px;
-    margin: 8px;
-  background: linear-gradient(white, #00b6d4, white);
-    border-radius: 50%;
-    border: 6px solid #00b6d4;
-    border-color: #00b6d4 transparent #00b6d4 transparent;
-    animation: lds-dual-ring 1.2s linear infinite;
-  }
-  @keyframes lds-dual-ring {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
     }
   }
 
@@ -125,12 +94,28 @@ tbody {
   }
 }
 
+ .resizer {
+        display: inline-block;
+        background: white;
+        width: 3px;
+        height: 100%;
+        position: absolute;
+        right: 0;
+        top: 0;
+        transform: translateX(50%);
+        z-index: 1;
+        ${'' }
+        touch-action:none;
 
+        &.isResizing {
+          background: black;
+        }
+      }
 `;
 
 const customModalStyles = {
   content: {
-    top: '48%',
+    top: '46%',
     left: '50%',
     right: 'auto',
     bottom: 'auto',
@@ -148,6 +133,7 @@ let companyCategories = [];
  * Table from react-table
  */
 function Table({ columns, data }) {
+
   const {
     getTableProps,
     getTableBodyProps,
@@ -159,9 +145,11 @@ function Table({ columns, data }) {
       columns,
       data,
       autoResetSortBy: false,
-      disableSortRemove: true
+      disableSortRemove: true,
     },
-    useSortBy
+    useSortBy,
+    //useBlockLayout,
+    //useResizeColumns,
   );
 
   if (isFirstLoad) {
@@ -202,6 +190,7 @@ function Table({ columns, data }) {
                         : ' 🔼'
                       : ''}
                   </span>
+                 
                 </th>
               ))}
             </tr>
@@ -228,31 +217,31 @@ function Table({ columns, data }) {
   )
 }
 
-function LoadingElement() {
-  const loadingElement = <div className="loading-div"><div className="lds-dual-ring"></div></div>;
+//function LoadingElement() {
+//  const loadingElement = <div className="loading-div"><div className="lds-dual-ring"></div></div>;
 
-  return loadingElement;
-}
+//  return loadingElement;
+//}
 
-function SearchBox() {
-  //const [searchValue, setSearchValue] = useState(searchValue2);
-  const [searchValue, setSearchValue] = useStore('searchValue', null);
+//function SearchBox() {
+//  //const [searchValue, setSearchValue] = useState(searchValue2);
+//  const [searchValue, setSearchValue] = useStore('searchValue', null);
 
-  let timeoutHandle = null;
-  const debounceSearchValue = function (inputEl) {
-    clearTimeout(timeoutHandle);
-    timeoutHandle = setTimeout(() => {
-      setSearchValue(inputEl.value);
-    }, 700);
-  }
+//  let timeoutHandle = null;
+//  const debounceSearchValue = function (inputEl) {
+//    clearTimeout(timeoutHandle);
+//    timeoutHandle = setTimeout(() => {
+//      setSearchValue(inputEl.value);
+//    }, 700);
+//  }
 
-  const searchBoxInputEl = (<input type="text"
-    placeholder="🔍 Hledat"
-    id="search-box"
-    onInput={(e) => { debounceSearchValue(e.target); }} />);
+//  const searchBoxInputEl = (<input type="text"
+//    placeholder="🔍 Hledat"
+//    id="search-box"
+//    onInput={(e) => { debounceSearchValue(e.target); }} />);
 
-  return searchBoxInputEl;
-}
+//  return searchBoxInputEl;
+//}
 
 // #endregion Subcomponents
 
@@ -289,12 +278,9 @@ export function ClientList() {
       const json = await response.json();
       setCategories(json.data);
       companyCategories = json.data;
-      console.log('categories', categories);
-      console.log('json.data', json.data);
     }
-    fetchCategories();
 
-    console.log('2categorie2s2', categories);
+    fetchCategories();
   }
 
   const sortState = React.useMemo(
@@ -346,7 +332,8 @@ export function ClientList() {
               {val}
             </NavLink>
           );
-        }
+        },
+        width: 400
       },
       {
         Header: 'Stav',
@@ -387,9 +374,7 @@ export function ClientList() {
         accessor: 'category.value',
         Cell: (info) => {
           const categoryName = (info.cell.value || '').trim();
-
           const color = getColorForCategory(categoryName, companyCategories);
-          console.log('colorr4', categoryName,'=', color, companyCategories);
 
           return <span style={{ backgroundColor: '#' + color }} className="category-cell">{categoryName}</span>
         }

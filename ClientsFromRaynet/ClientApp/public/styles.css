@@ -20,7 +20,7 @@
     position: absolute;
     right: 10px;
     top: 10px;
-    padding-left: 5px;
+    padding-left: 4px;
     padding-bottom: 3px;
 }
     #close-modal-btn:hover {
@@ -62,8 +62,8 @@
 }
 
 .modal-detail-body {
-    max-width: 700px;
-    max-height: 700px;
+    width: 680px;
+    height: 680px;
 }
     .modal-detail-body hr {
         margin: 0.75rem 0;
@@ -147,4 +147,69 @@
     padding: 0 10px 2px;
     text-align: center;
     white-space: nowrap;
+}
+
+@media (min-width: 1200px) {
+    #table-container, #nav-container {
+        max-width: 1150px;
+        /*margin-left: 60px;*/
+    }
+}
+@media (min-width: 1500px) {
+    #table-container, #nav-container {
+        max-width: 1400px;
+    }
+}
+@media (min-width: 1100px) and (max-width: 1200px) {
+    #table-container, #nav-container {
+        /*max-width: 1150px;*/
+        max-width: 1150px;
+        margin-left: 10px;
+    }
+}
+
+@media (max-width: 1100px) {
+    #table-container, #nav-container {
+        /*max-width: 1150px;*/
+        /*max-width: 1050px;*/
+        margin-left: 0;
+        padding-left: 0;
+    }
+}
+
+.loading-div {
+    position: absolute;
+    left: 0;
+    text-align: center;
+    width: 100%;
+}
+
+.lds-dual-ring {
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+    margin-top: 80px;
+}
+
+    .lds-dual-ring:after {
+        content: " ";
+        display: block;
+        width: 64px;
+        height: 64px;
+        margin: 8px;
+        background: transparent;
+        border-radius: 50%;
+        border: 6px solid #00b6d4;
+        border-color: #00b6d4 transparent #00b6d4 transparent;
+        animation: lds-dual-ring 1.2s linear infinite;
+    }
+
+@keyframes lds-dual-ring {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }

@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="ClientApp\src\components\Subcomponents.js" />
     <None Remove="ClientApp\src\Helpers.ts" />
   </ItemGroup>
 
@@ -33,6 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <TypeScriptCompile Include="ClientApp\src\components\Subcomponents.js" />
     <TypeScriptCompile Include="ClientApp\src\Helpers.ts" />
   </ItemGroup>
 

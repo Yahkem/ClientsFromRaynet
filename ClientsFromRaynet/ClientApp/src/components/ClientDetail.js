@@ -2,6 +2,7 @@
 import { useStore } from 'react-context-hook';
 import { enumDisplayString, Role, State, colorHexForState } from './../Enums';
 import { getColorForCategory, ratingDisplay, d, formatDate, formatYesNo, formatValueObj, formatLatLng } from '../Helpers';
+import { LoadingElement } from './Subcomponents';
 
 
 
@@ -139,10 +140,10 @@ export function ClientDetail({ clientId }) {
   const [selectedCompany, setSelectedCompany] = useStore('selectedCompany');
   const [companyImageData, setCompanyImageData] = useStore('companyImageData', null);
   const [categories, setCategories] = useStore('categories');
-
-  console.log('catt', categories);
+  const [isDetailLoading, setIsDetailLoading] = useStore('isDetailLoading', false);
 
   async function fetchData() {
+    setIsDetailLoading(true);
     setSelectedCompany(null);
     setCompanyImageData(null);
 
@@ -159,6 +160,7 @@ export function ClientDetail({ clientId }) {
     const company = json.data;
 
     setSelectedCompany(company);
+    setIsDetailLoading(false);
 
     if (company && company.logo && company.logo.id) {
       // fetch image
@@ -191,7 +193,6 @@ export function ClientDetail({ clientId }) {
   const socNetData = (!!selectedCompany && selectedCompany.socialNetworkContact) ?
     selectedCompany.socialNetworkContact
     : {};
-  console.log('socNetDatasocNetData', socNetData);
 
   const companyInfo = !!selectedCompany ?
     (<>
@@ -325,94 +326,20 @@ export function ClientDetail({ clientId }) {
   return (
     <div className="modal-detail-body">
       {
-        companyImageData === null ?
-          (<div style={{ 
-            "width": "160px",
-            "height": "160px",
-            "float": "left",
-            textAlign: "center",
-            paddingTop: "50px",
-            fontStyle: "italic",
-            border: "1px solid rgba(0,0,0,0.1)",
-            borderRadius: "8px"
-          }}>Klient nemá žádný obrázek</div>)
-        :
-          (<img src={companyImageData} alt="Obrázek/logo klienta" style={{ float: "left" }} width="160" height="160" />)
+        isDetailLoading ? <LoadingElement /> :
+          companyImageData === null ?
+            (<div style={{ 
+              "width": "160px",
+              "height": "160px",
+              "float": "left",
+              textAlign: "center",
+              paddingTop: "50px",
+              fontStyle: "italic",
+              border: "1px solid rgba(150, 150, 150, 0.1)",
+              borderRadius: "8px"
+            }}>Klient nemá žádný obrázek</div>)
+          : (<img src={companyImageData} alt="Obrázek/logo klienta" style={{ float: "left" }} width="160" height="160" />)
       }
       {companyInfo}
     </div>);
 }
-/*
-//name
-//
-firstName
-lastName
-bankAccount
-birthday: "2004-10-07"
-//owner: {id: 1, fullName: "RAYNET CRM"}
-
-rating: "A"
-
-role: "C_SUPPLIER"
-state: "A_POTENTIAL"
-
-rowInfo.createdAt: "2020-08-12 15:54"
-notice: "<p>ратататататата</p>"
-
-bankAccount: "string"
-legalForm: {id: 48, value: "s.r.o."}
-regNumber: "26843820" (IC)
-taxNumber: "CZ26843820" (DIC)
-taxNumber2: null
-taxPayer: null
-titleAfter: null
-titleBefore: null
-
-economyActivity: {value:"str"}
-employeesNumber: {value:"str"}
-paymentTerm: {value:"str"}
-
-primaryAddress:
-  address:
-    city: "Ostrava-Poruba"
-    country: "Česká republika"
-    countryCode: "CZ"
-    id: 1
-    lat: 49.827535
-    lng: 18.186293
-    name: "Sídlo klienta"
-    province: null
-    street: "Francouzská 6167/5"
-    zipCode: "708 00"
-    __proto__: Object
-  contactAddress: true
-  contactInfo:
-    email: "info@raynet.cz"
-    email2: null
-    fax: null
-    otherContact: null
-    primary: true
-    tel1: "+420 553 401 520"
-    tel1Type: null
-    tel2: null
-    tel2Type: null
-    www: "raynet.cz"
-    __proto__: Object
-  id: 1
-  primary: true
-  territory: null
-
-addresses[] typeofprimaryAddress[]
-
-socialNetworkContact:
-  facebook: "raynetsw"
-  googleplus: null
-  instagram: null
-  linkedin: null
-  pinterest: null
-  skype: null
-  twitter: null
-  youtube: null
-
-
-*/
