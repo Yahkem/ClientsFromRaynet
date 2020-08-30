@@ -68,13 +68,8 @@ export function ClientDetail({ clientId }) {
 
   const companyInfo = !!selectedCompany ?
     (<>
-      <div style={{
-        "display": "inline-block",
-        "height": "160px",
-        "maxWidth": "500px",
-        paddingLeft: "8px"
-      }}>
-        <h2 style={{ "display": "inline-block", width: "500px", overflow: "hidden", textOverflow: "ellipsis" }}>
+      <div className="client-logo-wrapper">
+        <h2 className="client-name">
           {selectedCompany.name}
         </h2><br />
         <i>{selectedCompany.person ? "Fyzická osoba" : "Firma"}</i>
@@ -97,7 +92,7 @@ export function ClientDetail({ clientId }) {
         <span className="label-client">Vlastník:&nbsp;</span>
         <strong>{selectedCompany.owner && selectedCompany.owner.fullName && d(selectedCompany.owner.fullName)}</strong>
         <br />
-        <span style={{ position: "relative" }}>
+        <span className="rating-wrapper">
           <span className="label-client">Rating:&nbsp;</span>{selectedCompany.rating}&nbsp;
             <span className="client-rating" dangerouslySetInnerHTML={{ __html: ratingDisplay(selectedCompany.rating) }}></span>
         </span>
@@ -200,18 +195,8 @@ export function ClientDetail({ clientId }) {
       {
         isDetailLoading ? <LoadingElement /> :
           companyImageData === null ?
-            (<div style={{ 
-              "width": "160px",
-              "height": "160px",
-              "float": "left",
-              textAlign: "center",
-              paddingTop: "50px",
-              fontStyle: "italic",
-              border: "1px solid rgba(190, 190, 190, 1)",
-              background: "rgb(230, 230, 230)",
-              borderRadius: "4px"
-            }}>Klient nemá žádný obrázek</div>)
-          : (<img src={companyImageData} alt="Obrázek/logo klienta" style={{ float: "left" }} width="160" height="160" />)
+            (<div class="no-client-image">Klient nemá žádný obrázek</div>)
+          : (<img src={companyImageData} alt="Obrázek/logo klienta" className="client-image" width="160" height="160" />)
       }
       {companyInfo}
     </div>);
