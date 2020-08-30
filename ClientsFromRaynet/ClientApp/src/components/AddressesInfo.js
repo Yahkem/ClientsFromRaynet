@@ -105,7 +105,7 @@ export function AddressesInfo({ addresses }) {
         (<>
           <span className="label-client">E-mail 2:&nbsp;</span>
           <a href={"mailto:" + contact.email2} rel="noopener noreferrer">{contact.email2}</a>
-          {d(contact.email2)}<br />
+          <br />
         </>)
       }
 

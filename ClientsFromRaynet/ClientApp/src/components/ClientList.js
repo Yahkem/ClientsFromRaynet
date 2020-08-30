@@ -111,6 +111,10 @@ const customModalStyles = {
  * Table component using react-table
  */
 function Table({ columns, data }) {
+  const sortByInitial = React.useMemo(
+    () => [{ id: 'name' } ],
+    []
+  );
 
   const {
     getTableProps,
@@ -124,29 +128,12 @@ function Table({ columns, data }) {
       data,
       autoResetSortBy: false,
       disableSortRemove: true,
+      initialState: {
+        sortBy: sortByInitial
+      }
     },
     useSortBy
   );
-
-  if (isFirstLoad) {
-    // default sort by name
-    isFirstLoad = false;
-
-    const nameColumn = (function () {
-      for (const h of headerGroups) {
-        for (const column of h.headers) {
-          if (column.id === 'name') {
-            return column;
-          }
-        }
-      }
-      return null;
-    })();
-
-    if (nameColumn) {
-      setTimeout(() => { nameColumn.toggleSortBy(); }, 700);
-    }
-  }
 
   return (
     <>
@@ -205,7 +192,7 @@ export function ClientList() {
   const [searchValue] = useStore('searchValue', null);
   const [companies, setCompanies] = useStore('companies', []);
   const [isLoading, setIsLoading] = useStore('isLoading', false);
-  const [isModalOpened, setIsModalOpened] = useStore('isModalOpened', clientId !== void 0);
+  const [isModalOpened, setIsModalOpened] = useStore('isModalOpened', !isNaN(clientId));
   const [username] = useStore('username', 'risul.kubny@centrum.cz');
   const [apiKey] = useStore('apiKey', 'crm-9c4fde5a37a847c79aae988a7b7528c7');
   const [appUrl] = useStore('appUrl', 'https://app.raynet.cz/api/v2/company/');
@@ -214,9 +201,11 @@ export function ClientList() {
 
   if (isFirstLoad) {
     // Load company categories
-    const categoriesUrl = 'https://app.raynet.cz/api/v2/companyCategory/';
+    isFirstLoad = false;
 
     async function fetchCategories() {
+      const categoriesUrl = 'https://app.raynet.cz/api/v2/companyCategory/';
+
       setCategories([]);
 
       const response = await fetch(categoriesUrl, {
@@ -229,8 +218,9 @@ export function ClientList() {
       });
 
       const json = await response.json();
-      setCategories(json.data);
+
       companyCategories = json.data;
+      setCategories(companyCategories);
     }
 
     fetchCategories();
