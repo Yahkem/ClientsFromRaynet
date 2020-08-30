@@ -247,3 +247,31 @@ h2.client-name {
     display: inline-block;
     padding-bottom: 4px;
 }
+
+#access-password {
+    border: 1px solid rgb(150, 150, 150);
+    border-radius: 10px;
+    padding-left: 10px;
+}
+    #access-password:focus, .login-btn:focus {
+        box-shadow: none;
+        outline: 0 none;
+    }
+
+.login-btn {
+    margin-left: 8px;
+    background: #00b6d4;
+    color: white;
+    border: none;
+    padding: 2px 12px;
+    -moz-border-radius: 30px;
+    -webkit-border-radius: 30px;
+    border-radius: 30px;
+    -moz-transition: .4s;
+    -o-transition: .4s;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+    .login-btn:hover {
+        background: #0094b1;
+    }
