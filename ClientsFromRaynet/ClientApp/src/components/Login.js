@@ -5,6 +5,8 @@ import React, { useState } from 'react';
 export function Login() {
   const [isLoggedIn, setIsLoggedIn] = useStore('isLoggedIn');
   const [invalidPw, setInvalidPw] = useState(false);
+  const history = useHistory();
+  const hashValue = 1417606992;
 
   function hashFunc(str) {
     let hash = 0;
@@ -16,16 +18,14 @@ export function Login() {
     return hash;
   }
 
-  const hashValue = 1417606992;
-  const history = useHistory();
-
-  const onButtonClick = (e) => {
+  const onButtonClick = () => {
     const inputValue = document.getElementById('access-password').value;
     const hashedInput = hashFunc(inputValue);
 
     if (hashedInput === hashValue) {
       setInvalidPw(false);
       setIsLoggedIn(true);
+
       history.push('/client');
     } else {
       setInvalidPw(true);
@@ -35,9 +35,7 @@ export function Login() {
   return (
     <form onSubmit={(e) => { e.preventDefault(); e.stopPropagation(); return false; }}>
       <label htmlFor="access-password">Přístupový kód:&nbsp;</label>
-      <input type="text" id="access-password" onInput={(e) => {
-        console.log('e',e, e.persist());
-      }} />
+      <input type="text" id="access-password" />
       <button
         onClick={onButtonClick}
         className="login-btn">
