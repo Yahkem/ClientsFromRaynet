@@ -7,6 +7,8 @@ import { Link, useParams} from 'react-router-dom';
 import { useStore } from 'react-context-hook';
 import Modal from 'react-modal';
 import { ClientDetail } from './ClientDetail';
+import { getColorForCategory } from '../Helpers';
+
 
 const Styles = styled.div`
   padding: 1rem;
@@ -142,7 +144,6 @@ let isFirstLoad = true;
  * Table from react-table
  */
 function Table({ columns, data }) {
-
   const {
     getTableProps,
     getTableBodyProps,
@@ -249,6 +250,7 @@ function SearchBox() {
 
 // #endregion Subcomponents
 
+let companyCategories = [];
 
 /**
  * Main component
@@ -263,6 +265,33 @@ export function ClientList() {
   const [apiKey] = useStore('apiKey', 'crm-9c4fde5a37a847c79aae988a7b7528c7');
   const [appUrl] = useStore('appUrl', 'https://app.raynet.cz/api/v2/company/');
   const [selectedCompany, setSelectedCompany] = useStore('selectedCompany', null);
+  const [categories, setCategories] = useStore('categories', companyCategories);
+
+  if (isFirstLoad) {
+    const categoriesUrl = 'https://app.raynet.cz/api/v2/companyCategory/';
+
+    async function fetchCategories() {
+      setCategories([]);
+
+      const response = await fetch(categoriesUrl, {
+        method: 'GET',
+        headers: {
+          "X-Instance-Name": "taktozkusime",
+          'Authorization': 'Basic ' + btoa(username + ':' + apiKey),
+        },
+        timeout: 5000
+      });
+
+      const json = await response.json();
+      setCategories(json.data);
+      companyCategories = json.data;
+      console.log('categories', categories);
+      console.log('json.data', json.data);
+    }
+    fetchCategories();
+
+    console.log('2categorie2s2', categories);
+  }
 
   // Get table columns
   const columns = React.useMemo(
@@ -322,6 +351,14 @@ export function ClientList() {
       {
         Header: 'Kategorie',
         accessor: 'category.value',
+        Cell: (info) => {
+          const categoryName = (info.cell.value || '').trim();
+
+          const color = getColorForCategory(categoryName, companyCategories);
+          console.log('colorr4', categoryName,'=', color, companyCategories);
+
+          return <span style={{ backgroundColor: '#' + color }} className="category-cell">{categoryName}</span>
+        }
       },
     ],
     []

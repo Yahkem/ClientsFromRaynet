@@ -1,6 +1,7 @@
 ﻿import React, { useEffect } from 'react';
 import { useStore } from 'react-context-hook';
 import { enumDisplayString, Role, State, colorHexForState } from './../Enums';
+import { getColorForCategory } from '../Helpers';
 
 /**
  * Helper for null display
@@ -163,15 +164,21 @@ function AddressesInfo({ addresses }) {
     </>);
 }
 
+
+
 export function ClientDetail({ clientId }) {
   const [username] = useStore('username', 'risul.kubny@centrum.cz');
   const [apiKey] = useStore('apiKey', 'crm-9c4fde5a37a847c79aae988a7b7528c7');
   const [appUrl] = useStore('appUrl', 'https://app.raynet.cz/api/v2/company/');
   const [selectedCompany, setSelectedCompany] = useStore('selectedCompany');
   const [companyImageData, setCompanyImageData] = useStore('companyImageData', null);
+  const [categories, setCategories] = useStore('categories');
+
+  console.log('catt', categories);
 
   async function fetchData() {
-    setSelectedCompany(null); setCompanyImageData(null);
+    setSelectedCompany(null);
+    setCompanyImageData(null);
 
     const response = await fetch(appUrl + clientId, {
       method: 'GET',
@@ -217,11 +224,15 @@ export function ClientDetail({ clientId }) {
     return stars;
   };
 
+  const categoryColor = selectedCompany && selectedCompany.category && selectedCompany.category.value ?
+    getColorForCategory(selectedCompany.category.value, categories)
+    : null;
+
   console.log('selectedCompany', selectedCompany);
   const socNetData = (!!selectedCompany && selectedCompany.socialNetworkContact) ?
     selectedCompany.socialNetworkContact
     : {};
-  console.log('socNetDatasocNetData', socNetData)
+  console.log('socNetDatasocNetData', socNetData);
 
   const companyInfo = !!selectedCompany ?
     (<>
@@ -273,7 +284,10 @@ export function ClientDetail({ clientId }) {
           <span>{enumDisplayString(selectedCompany.role, Role)}</span><br />
 
           <span className="label-client">Kategorie:&nbsp;</span>
-          <span>{formatValueObj(selectedCompany.category)}</span><br />
+          <span style={{ backgroundColor: '#' + categoryColor }}
+            className="category-cell">
+            {formatValueObj(selectedCompany.category)}
+          </span><br />
 
           <span className="label-client">Obor:&nbsp;</span>
           <span>{formatValueObj(selectedCompany.economyActivity)}</span><br />

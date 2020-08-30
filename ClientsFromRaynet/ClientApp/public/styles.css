@@ -141,3 +141,10 @@
         background-image: url('socialnet/yt_on.svg');
     }
 
+.category-cell {
+    border-radius: 30px;
+    display: inline-block;
+    padding: 0 10px 2px;
+    text-align: center;
+    white-space: nowrap;
+}
