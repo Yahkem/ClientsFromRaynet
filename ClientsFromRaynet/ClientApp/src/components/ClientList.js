@@ -7,7 +7,7 @@ import { Link, useParams} from 'react-router-dom';
 import { useStore } from 'react-context-hook';
 import Modal from 'react-modal';
 import { ClientDetail } from './ClientDetail';
-import { getColorForCategory } from '../Helpers';
+import { getColorForCategory, d, formatDate, formatYesNo, formatValueObj, formatLatLng } from '../Helpers';
 
 
 const Styles = styled.div`
@@ -140,6 +140,7 @@ const customModalStyles = {
 };
 
 let isFirstLoad = true;
+let companyCategories = [];
 
 // #region Subcomponents
 
@@ -156,7 +157,9 @@ function Table({ columns, data }) {
   } = useTable(
     {
       columns,
-      data
+      data,
+      autoResetSortBy: false,
+      disableSortRemove: true
     },
     useSortBy
   );
@@ -253,8 +256,6 @@ function SearchBox() {
 
 // #endregion Subcomponents
 
-let companyCategories = [];
-
 /**
  * Main component
  * */
@@ -296,6 +297,34 @@ export function ClientList() {
     console.log('2categorie2s2', categories);
   }
 
+  const sortState = React.useMemo(
+    () => {
+      return function (rowA, rowB) {
+        const stateA = rowA.values.state;
+        const stateB = rowB.values.state;
+
+        const displayStrA = enumDisplayString(stateA, State);
+        const displayStrB = enumDisplayString(stateB, State);
+
+        return displayStrA.localeCompare(displayStrB);
+      };
+    }, [searchValue]
+  );
+  const sortRole = React.useMemo(
+    () => {
+      return function (rowA, rowB) {
+        const roleA = rowA.values.role;
+        const roleB = rowB.values.role;
+
+        const displayStrA = enumDisplayString(roleA, Role);
+        const displayStrB = enumDisplayString(roleB, Role);
+
+        return displayStrA.localeCompare(displayStrB);
+      };
+    }, [searchValue]
+  );
+
+
   // Get table columns
   const columns = React.useMemo(
     () => [
@@ -326,14 +355,16 @@ export function ClientList() {
           return (<span style={{ "color": colorHexForState(info.cell.value) }}>
             {enumDisplayString(info.cell.value, State)}
           </span>);
-        }
+        },
+        sortType: sortState
       },
       {
         Header: 'Vztah',
         accessor: 'role',
         Cell: (info) => {
           return enumDisplayString(info.cell.value, Role);
-        }
+        },
+        sortType: sortRole
       },
       {
         Header: 'Rating',

@@ -1,43 +1,9 @@
 ﻿import React, { useEffect } from 'react';
 import { useStore } from 'react-context-hook';
 import { enumDisplayString, Role, State, colorHexForState } from './../Enums';
-import { getColorForCategory } from '../Helpers';
+import { getColorForCategory, ratingDisplay, d, formatDate, formatYesNo, formatValueObj, formatLatLng } from '../Helpers';
 
-/**
- * Helper for null display
- */
-const d = (x) => !!x ? x : '–';
 
-const formatValueObj = (obj) => {
-  if (obj === void 0 || obj === null || obj.value === null) {
-    return d(null);
-  }
-
-  return d(obj.value);
-};
-
-const formatYesNo = (val) =>
-  (val === 'YES') ? 'Ano' :
-    (val === 'NO') ? 'Ne' :
-      d(null);
-
-const formatLatLng = (addr) =>
-  !!addr.lat ?
-    d(addr.lat) + ", " + d(addr.lng) :
-    d(null);
-
-/**
- * Helper for date display
- */
-const formatDate = (dt) => {
-  if (!dt) {
-    return '–';
-  }
-
-  const date = new Date(dt)
-
-  return date.toLocaleDateString('cs-CZ');
-}
 
 
 function AddressesInfo({ addresses }) {
@@ -215,14 +181,7 @@ export function ClientDetail({ clientId }) {
     fetchData();
   }, [clientId]);
 
-  const ratingDisplay = (c) => {
-    const stars = c === 'A' ? '&#9733;&#9733;&#9733;' :
-      c === 'B' ? '&#9733;&#9733;&#9734;' :
-        c === 'C' ? '&#9733;&#9734;&#9734;' :
-          '&#9734;&#9734;&#9734;';
-
-    return stars;
-  };
+  
 
   const categoryColor = selectedCompany && selectedCompany.category && selectedCompany.category.value ?
     getColorForCategory(selectedCompany.category.value, categories)
