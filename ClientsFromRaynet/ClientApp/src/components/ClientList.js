@@ -1,7 +1,5 @@
 ﻿import React, { useEffect } from 'react';
-import {
-  useTable, useSortBy, useBlockLayout,
-  useResizeColumns } from 'react-table';
+import { useTable, useSortBy} from 'react-table';
 import styled from 'styled-components';
 import { enumDisplayString, Role, State, colorHexForState } from './../Enums';
 import { NavLink } from 'reactstrap';
@@ -9,7 +7,7 @@ import { Link, useParams} from 'react-router-dom';
 import { useStore } from 'react-context-hook';
 import Modal from 'react-modal';
 import { ClientDetail } from './ClientDetail';
-import { getColorForCategory, d, formatDate, formatYesNo, formatValueObj, formatLatLng } from '../Helpers';
+import { getColorForCategory } from '../Helpers';
 import { LoadingElement, SearchBox } from './Subcomponents';
 
 const Styles = styled.div`
@@ -93,24 +91,6 @@ tbody {
     text-decoration: underline;
   }
 }
-
- .resizer {
-        display: inline-block;
-        background: white;
-        width: 3px;
-        height: 100%;
-        position: absolute;
-        right: 0;
-        top: 0;
-        transform: translateX(50%);
-        z-index: 1;
-        ${'' }
-        touch-action:none;
-
-        &.isResizing {
-          background: black;
-        }
-      }
 `;
 
 const customModalStyles = {
@@ -147,9 +127,7 @@ function Table({ columns, data }) {
       autoResetSortBy: false,
       disableSortRemove: true,
     },
-    useSortBy,
-    //useBlockLayout,
-    //useResizeColumns,
+    useSortBy
   );
 
   if (isFirstLoad) {
@@ -216,32 +194,6 @@ function Table({ columns, data }) {
     </>
   )
 }
-
-//function LoadingElement() {
-//  const loadingElement = <div className="loading-div"><div className="lds-dual-ring"></div></div>;
-
-//  return loadingElement;
-//}
-
-//function SearchBox() {
-//  //const [searchValue, setSearchValue] = useState(searchValue2);
-//  const [searchValue, setSearchValue] = useStore('searchValue', null);
-
-//  let timeoutHandle = null;
-//  const debounceSearchValue = function (inputEl) {
-//    clearTimeout(timeoutHandle);
-//    timeoutHandle = setTimeout(() => {
-//      setSearchValue(inputEl.value);
-//    }, 700);
-//  }
-
-//  const searchBoxInputEl = (<input type="text"
-//    placeholder="🔍 Hledat"
-//    id="search-box"
-//    onInput={(e) => { debounceSearchValue(e.target); }} />);
-
-//  return searchBoxInputEl;
-//}
 
 // #endregion Subcomponents
 

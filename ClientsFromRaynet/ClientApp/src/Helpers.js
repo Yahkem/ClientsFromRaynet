@@ -45,7 +45,7 @@ exports.formatLatLng = function (addr) {
  */
 exports.formatDate = function (dt) {
     if (!dt) {
-        return '–';
+        return exports.d(null);
     }
     var date = new Date(dt);
     return date.toLocaleDateString('cs-CZ');

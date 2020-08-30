@@ -12,8 +12,6 @@ import Modal from 'react-modal';
 Modal.setAppElement('#root')
 
 class App extends Component {
-  static displayName = App.name;
-
   render () {
     return (
       <Layout>

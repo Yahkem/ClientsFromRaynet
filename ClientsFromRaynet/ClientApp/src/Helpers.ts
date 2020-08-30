@@ -47,10 +47,10 @@ export const formatLatLng = (addr: { lat: number, lng: number}) =>
  */
 export const formatDate = (dt: string) => {
   if (!dt) {
-    return '–';
+    return d(null);
   }
 
   const date = new Date(dt)
 
   return date.toLocaleDateString('cs-CZ');
-}
+};
