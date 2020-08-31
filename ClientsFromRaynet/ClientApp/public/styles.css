@@ -253,11 +253,6 @@ h2.client-name {
     padding-left: 8px;
 }
 
-.show-on-map-link {
-    display: inline-block;
-    padding-bottom: 4px;
-}
-
 #access-password {
     border: 1px solid rgb(150, 150, 150);
     border-radius: 10px;
@@ -285,3 +280,18 @@ h2.client-name {
     .login-btn:hover {
         background: #0094b1;
     }
+
+.client-info-table tr > td:first-child {
+    vertical-align: top;
+    padding-right: 4px;
+}
+
+.client-info-table tr > td:last-child {
+    word-break: break-all;
+}
+
+.address-name {
+    word-break: break-all;
+}
+
+

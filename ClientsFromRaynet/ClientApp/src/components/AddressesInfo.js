@@ -38,7 +38,7 @@ export function AddressesInfo({ addresses }) {
     const contact = addrInfo.contactInfo;
 
     const infoEl = (<>
-      <span className="label-client">
+      <span className="label-client address-name">
         <strong>{addr.name}</strong>
         {otherInfo && (" (" + otherInfo + ")")}
       </span>
@@ -60,75 +60,146 @@ export function AddressesInfo({ addresses }) {
     return (<div className="col-md-6 col-addr">
       {infoEl}
 
-      <span className="label-client">Ulice:&nbsp;</span>
-      {d(addr.street)}<br />
-      <span className="label-client">Město:&nbsp;</span>
-      {d(addr.city)}<br />
-      <span className="label-client">PSČ:&nbsp;</span>
-      {d(addr.zipCode)}<br />
-      <span className="label-client">Kraj:&nbsp;</span>
-      {d(addr.province)}<br />
-      <span className="label-client">Země:&nbsp;</span>
-      {d(addr.country)}<br />
-      <span className="label-client">GPS:&nbsp;</span>
-      {formatLatLng(addr)}<br />
-      {
-        gMapsHref &&
-        <>
-          <a href={gMapsHref} target="_blank" rel="noopener noreferrer" className="show-on-map-link">
-            <span role="img" aria-label="map">🗺️</span>&nbsp;Zobrazit na mapě
-          </a>
-          <br />
-        </>
-      }
-
-      <span className="label-client">Telefon:&nbsp;</span>
-      {d(contact.tel1)}<br />
-
-      {contact.tel2 &&
-        (<>
-          <span className="label-client">Telefon 2:&nbsp;</span>
-          {d(contact.tel2)}<br />
-        </>)
-      }
-
-      <span className="label-client">E-mail:&nbsp;</span>
-      {
-        !!contact.email ?
-          <a href={"mailto:" + contact.email} rel="noopener noreferrer">{contact.email}</a>
-          : d(null)
-      }
-      <br />
-
-      {contact.email2 &&
-        (<>
-          <span className="label-client">E-mail 2:&nbsp;</span>
-          <a href={"mailto:" + contact.email2} rel="noopener noreferrer">{contact.email2}</a>
-          <br />
-        </>)
-      }
-
-      <span className="label-client">WWW:&nbsp;</span>
-      {!!contact.www ?
-        (<a href={formatHref(contact.www)} target="_blank" rel="noopener noreferrer">{contact.www}</a>)
-        : d(contact.www)
-      }
-
-      {contact.fax &&
-        (<>
-          <br />
-          <span className="label-client">Fax:&nbsp;</span>
-          {d(contact.fax)}
-        </>)
-      }
-
-      {contact.otherContact &&
-        (<>
-          <br />
-          <span className="label-client">Jiný kontakt:&nbsp;</span>
-          {d(contact.otherContact)}
-        </>)
-      }
+      <table className="client-info-table">
+        <tbody>
+          <tr>
+            <td>
+              <span className="label-client">Ulice:</span>
+            </td>
+            <td>
+              {d(addr.street)}
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <span className="label-client">Město:</span>
+            </td>
+            <td>
+              {d(addr.city)}
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <span className="label-client">PSČ:</span>
+            </td>
+            <td>
+              {d(addr.zipCode)}
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <span className="label-client">Kraj:</span>
+            </td>
+            <td>
+              {d(addr.province)}
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <span className="label-client">Země:</span>
+            </td>
+            <td>
+              {d(addr.country)}
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <span className="label-client">GPS:</span>
+            </td>
+            <td>
+              {formatLatLng(addr)}
+            </td>
+          </tr>
+          {
+            gMapsHref &&
+            <tr>
+              <td>&nbsp;</td>
+              <td>
+                <a href={gMapsHref} target="_blank" rel="noopener noreferrer">
+                  <span role="img" aria-label="map">🗺️</span>&nbsp;Zobrazit na mapě
+                </a>
+              </td>
+            </tr>
+          }
+          <tr>
+            <td>
+              <span className="label-client">Telefon:</span>
+            </td>
+            <td>
+              {d(contact.tel1)}
+            </td>
+          </tr>
+          {contact.tel2 &&
+            <tr>
+              <td>
+                <span className="label-client">Telefon&nbsp;2:</span>
+              </td>
+              <td>
+                {d(contact.tel2)}
+              </td>
+            </tr>
+          }
+          <tr>
+            <td>
+              <span className="label-client">E-mail:</span>
+            </td>
+            <td>
+              {
+                !!contact.email ?
+                  <a href={"mailto:" + contact.email} rel="noopener noreferrer">{contact.email}</a>
+                  : d(null)
+              }
+            </td>
+          </tr>
+          {
+            contact.email2 &&
+            (
+              <tr>
+                <td>
+                  <span className="label-client">E-mail&nbsp;2:</span>
+                </td>
+                <td>
+                  <a href={"mailto:" + contact.email2} rel="noopener noreferrer">{contact.email2}</a>
+                </td>
+              </tr>
+            )
+          }
+          <tr>
+            <td>
+              <span className="label-client">WWW:</span>
+            </td>
+            <td>
+              {
+                contact.www ?
+                  (<a href={formatHref(contact.www)} target="_blank" rel="noopener noreferrer">{contact.www}</a>)
+                  : d(contact.www)
+              }
+            </td>
+          </tr>
+          {
+            !!contact.fax &&
+            <tr>
+              <td>
+                <span className="label-client">Fax:</span>
+              </td>
+              <td>
+                {d(contact.fax)}
+              </td>
+            </tr>
+          }
+          {
+            contact.otherContact &&
+            <tr>
+              <td>
+                <span className="label-client">Jiný&nbsp;kontakt:</span>
+              </td>
+              <td>
+                {d(contact.otherContact)}
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
     </div>);
   }
 
