@@ -34,12 +34,12 @@ export function Login() {
 
   return (
     <form onSubmit={(e) => { e.preventDefault(); e.stopPropagation(); return false; }}>
-      <label htmlFor="access-password">Přístupový kód:&nbsp;</label>
+      <label htmlFor="access-password">Přístupový&nbsp;kód:</label>
       <input type="text" id="access-password" />
       <button
         onClick={onButtonClick}
         className="login-btn">
-        Zadat
+        Povrdit
       </button>
       {
         invalidPw && 

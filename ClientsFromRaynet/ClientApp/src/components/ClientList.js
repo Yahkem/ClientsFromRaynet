@@ -74,19 +74,9 @@ table {
 
 #search-box {
   margin-bottom: 16px;
-  border: 1px solid rgb(100, 100, 100);
-  padding-left: 8px;
   border-radius: 10px;
   font-size: 18px;
-
-  :focus {
-    border-radius: 10px;
-    box-shadow: none;
-    outline: 0 none;
-  }
 }
-
-
 
 .text-link {
   :hover {
@@ -104,6 +94,7 @@ table {
     margin: 0 1px 0 1px;
     padding: 0 6px 4px 6px;
     line-height: 0;
+    background: transparent;
 
     :focus {
       outline: 0 none;
@@ -165,9 +156,7 @@ function Table({ columns, data }) {
     getTableProps,
     getTableBodyProps,
     headerGroups,
-    //rows,
     prepareRow,
-    // pagination
     page,
     canPreviousPage,
     canNextPage,
@@ -177,7 +166,7 @@ function Table({ columns, data }) {
     nextPage,
     previousPage,
     setPageSize,
-    state: { pageIndex, pageSize }
+    state: { pageSize }
   } = useTable(
     {
       columns,
@@ -192,11 +181,6 @@ function Table({ columns, data }) {
     useSortBy,
     usePagination
     );
-
-  console.log('pageCount', pageCount,
-    'previousPage', previousPage,
-    'nextPage', nextPage
-  );
 
   return (
     <>
@@ -267,15 +251,17 @@ function Table({ columns, data }) {
         <button onClick={() => { setPageIdx(pageIdx + 1); nextPage() }} disabled={!canNextPage}>
           {'>'}
         </button>
-        <button onClick={() => {
-          const lastPage = pageCount - 1;
-          setPageIdx(lastPage);
-          gotoPage(lastPage)
-        }} disabled={!canNextPage}>
+        <button
+          onClick={() => {
+            const lastPage = pageCount - 1;
+            setPageIdx(lastPage);
+            gotoPage(lastPage)
+          }}
+          disabled={!canNextPage}>
           {'>|'}
         </button>
 
-        <div class="set-page-size">
+        <div className="set-page-size">
           Zobrazit{' '}
           <select
             value={pageSize}
@@ -310,11 +296,11 @@ export function ClientList() {
   const [username] = useStore('username', 'risul.kubny@centrum.cz');
   const [apiKey] = useStore('apiKey', 'crm-9c4fde5a37a847c79aae988a7b7528c7');
   const [appUrl] = useStore('appUrl', 'https://app.raynet.cz/api/v2/company/');
-  const [selectedCompany, setSelectedCompany] = useStore('selectedCompany', null);
+  const [selectedClient, setSelectedClient] = useStore('selectedClient', null);
   const [categories, setCategories] = useStore('categories', companyCategories);
 
   if (isFirstLoad) {
-    // Load company categories
+    // Load company categories during 1st load
     isFirstLoad = false;
 
     async function fetchCategories() {
@@ -354,6 +340,7 @@ export function ClientList() {
       };
     }, [searchValue]
   );
+
   const sortRole = React.useMemo(
     () => {
       return function (rowA, rowB) {
@@ -369,7 +356,7 @@ export function ClientList() {
   );
 
 
-  // Get table columns
+  // Table column definition
   const columns = React.useMemo(
     () => [
       {
@@ -384,7 +371,7 @@ export function ClientList() {
             <NavLink tag={Link} className="text-link"
               to={{ pathname: url, state: client }}
               onClick={() => {
-                setSelectedCompany(client);
+                setSelectedClient(client);
                 setIsModalOpened(true);
               }}>
               {val}
@@ -441,6 +428,7 @@ export function ClientList() {
     []
   );
 
+  // Fetch data with 'fulltext' parameter when search value is changed
   useEffect(() => {
     async function fetchData() {
       setIsLoading(true);

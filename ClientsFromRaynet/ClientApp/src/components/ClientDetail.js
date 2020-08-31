@@ -11,16 +11,16 @@ export function ClientDetail({ clientId }) {
   const [username] = useStore('username', 'risul.kubny@centrum.cz');
   const [apiKey] = useStore('apiKey', 'crm-9c4fde5a37a847c79aae988a7b7528c7');
   const [appUrl] = useStore('appUrl', 'https://app.raynet.cz/api/v2/company/');
-  const [selectedCompany, setSelectedCompany] = useStore('selectedCompany');
-  const [companyImageData, setCompanyImageData] = useStore('companyImageData', null);
+  const [selectedClient, setSelectedClient] = useStore('selectedClient');
+  const [clientImageData, setClientImageData] = useStore('clientImageData', null);
   const [categories] = useStore('categories');
   const [isDetailLoading, setIsDetailLoading] = useStore('isDetailLoading', false);
   const [isImageLoading, setIsImageLoading] = useState(false);
 
   async function fetchData() {
     setIsDetailLoading(true);
-    setSelectedCompany(null);
-    setCompanyImageData(null);
+    setSelectedClient(null);
+    setClientImageData(null);
 
     const response = await fetch(appUrl + clientId, {
       method: 'GET',
@@ -32,16 +32,16 @@ export function ClientDetail({ clientId }) {
     });
 
     const json = await response.json();
-    const company = json.data;
+    const client = json.data;
 
-    setSelectedCompany(company);
+    setSelectedClient(client);
     setIsDetailLoading(false);
 
-    if (company && company.logo && company.logo.id) {
+    if (client && client.logo && client.logo.id) {
       // fetch image
       setIsImageLoading(true);
 
-      const imageResponse = await fetch('https://app.raynet.cz/api/v2/image/' + company.logo.id, {
+      const imageResponse = await fetch('https://app.raynet.cz/api/v2/image/' + client.logo.id, {
         method: 'GET',
         headers: {
           "X-Instance-Name": "taktozkusime",
@@ -52,7 +52,7 @@ export function ClientDetail({ clientId }) {
 
       const imageData = (await imageResponse.json()).imgData;
 
-      setCompanyImageData(imageData);
+      setClientImageData(imageData);
       setIsImageLoading(false);
     }
   }
@@ -61,52 +61,75 @@ export function ClientDetail({ clientId }) {
     fetchData();
   }, [clientId]);
 
-  const companyInfo = !!selectedCompany ?
+  const clientInfo = !!selectedClient ?
     (<>
-      <div className="client-logo-wrapper">
+      <div className="client-name-container">
         <h2 className="client-name">
-          {selectedCompany.name}
-        </h2><br />
-        <i>{selectedCompany.person ? "Fyzická osoba" : "Firma"}</i>
-        <br />
-        {
-          selectedCompany.person && !!selectedCompany.firstName &&
-          <>
-            <span className="label-client">Jméno:&nbsp;</span>
-            <strong>{d(selectedCompany.firstName)}</strong>&nbsp;
-          </>
-        }
-        {
-          selectedCompany.person && !!selectedCompany.lastName &&
-          <>
-            <span className="label-client">Příjmení:&nbsp;</span>
-            <strong>{d(selectedCompany.lastName)}</strong>
-            <br />
-          </>
-        }
-        <span className="label-client">Vlastník:&nbsp;</span>
-        <strong>{selectedCompany.owner && selectedCompany.owner.fullName && d(selectedCompany.owner.fullName)}</strong>
-        <br />
-        <span className="rating-wrapper">
-          <span className="label-client">Rating:&nbsp;</span>{selectedCompany.rating}&nbsp;
-            <span className="client-rating" dangerouslySetInnerHTML={{ __html: ratingDisplay(selectedCompany.rating) }}></span>
-        </span>
+          {selectedClient.name}
+        </h2>
+
+        <i>{selectedClient.person ? "Fyzická osoba" : "Firma"}</i>
+
+        <table className="client-info-table">
+          <tbody>
+          {
+            selectedClient.person &&
+              <tr>
+                <td>
+                  <span className="label-client">Jméno:</span>
+                </td>
+                <td>
+                  <strong className="client-firstname">{d(selectedClient.firstName)}</strong>
+                </td>
+                <td>
+                  <span className="label-client">Příjmení:</span>
+                </td>
+                <td>
+                  <strong className="client-surname">{d(selectedClient.lastName)}</strong>
+                </td>
+              </tr>
+            }
+            <tr>
+              <td>
+                <span className="label-client">Vlastník:</span>
+              </td>
+              <td colSpan="3">
+                <strong>
+                  {selectedClient.owner && selectedClient.owner.fullName && d(selectedClient.owner.fullName)}
+                </strong>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span className="label-client">Rating:</span>
+              </td>
+              <td colSpan="3">
+                <strong>
+                  <span className="rating-container">
+                    <strong>{selectedClient.rating}&nbsp;</strong>
+                    <span className="client-rating" dangerouslySetInnerHTML={{ __html: ratingDisplay(selectedClient.rating) }}></span>
+                  </span>
+                </strong>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
       <hr />
 
       <h4>Základní údaje</h4>
-      <BasicInfoRow client={selectedCompany} categories={categories} />
-      <SocialNetworkContacts client={selectedCompany} />
+      <BasicInfoRow client={selectedClient} categories={categories} />
+      <SocialNetworkContacts client={selectedClient} />
       <hr />
 
       <h4>Adresy a kontakty</h4>
       <div className="row">
-        <AddressesInfo addresses={selectedCompany.addresses} />
+        <AddressesInfo addresses={selectedClient.addresses} />
       </div>
       <hr className="mt-0" />
 
       <span className="label-client">Poznámka</span>
-      <div className="notice" dangerouslySetInnerHTML={{ __html: selectedCompany.notice }}></div>
+      <div className="notice" dangerouslySetInnerHTML={{ __html: selectedClient.notice }}></div>
     </>)
     :
     <i></i>;
@@ -116,11 +139,11 @@ export function ClientDetail({ clientId }) {
       {
         isDetailLoading ? <LoadingElement /> :
           isImageLoading ? <LoadingElement className="loading-img" /> :
-            companyImageData === null ?
+            clientImageData === null ?
               (<div className="no-client-image">Klient nemá žádný obrázek</div>)
               :
-              (<img src={companyImageData} alt="Obrázek/logo klienta" className="client-image" width="160" height="160" />)
+              (<img src={clientImageData} alt="Obrázek/logo klienta" className="client-image" width="160" height="160" />)
       }
-      {companyInfo}
+      {clientInfo}
     </div>);
 }
