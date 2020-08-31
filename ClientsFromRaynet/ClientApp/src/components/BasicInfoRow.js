@@ -36,7 +36,7 @@ export function BasicInfoRow({ client, categories }) {
             </td>
             <td>
               <span style={{ backgroundColor: '#' + categoryColor }}
-                className="category-cell">
+                className={categoryColor ? "category-cell" : ""}>
                 {formatValueObj(client.category)}
               </span>
             </td>
