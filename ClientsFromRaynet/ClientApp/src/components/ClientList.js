@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from 'react';
-import { useTable, useSortBy} from 'react-table';
+import { useTable, useSortBy, usePagination } from 'react-table';
 import styled from 'styled-components';
 import { enumDisplayString, Role, State, colorHexForState } from './../Enums';
 import { NavLink } from 'reactstrap';
@@ -49,6 +49,26 @@ table {
       border-right: 0;
     }
   }
+
+  td > .nav-link {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-weight: 600;
+  }
+
+  tbody {
+    tr[role="row"] {
+      :nth-child(odd) {
+        background: rgb(255, 255, 255);
+      }
+      :nth-child(even) {
+        background: rgb(230, 230, 230);
+      }
+      :hover {
+        background: #e0fcd4;
+      }
+    }
+  }
 }
 
 
@@ -66,35 +86,57 @@ table {
   }
 }
 
-td > .nav-link {
-  text-overflow: ellipsis;
-  overflow: hidden;
-  font-weight: 600;
-}
 
-tbody {
-  tr[role="row"] {
-    :nth-child(odd) {
-      background: rgb(255, 255, 255);
-    }
-    :nth-child(even) {
-      background: rgb(230, 230, 230);
-    }
-    :hover {
-      background: #e0fcd4;
-    }
-  }
-}
 
 .text-link {
   :hover {
     text-decoration: underline;
   }
 }
+
+.pagination {
+  padding: .5rem;
+
+  button {
+    border: none;
+    color: #0366d6;
+    font-size: 1.3rem;
+    margin: 0 1px 0 1px;
+    padding: 0 6px 4px 6px;
+    line-height: 0;
+
+    :focus {
+      outline: 0 none;
+      box-shadow: none;
+    }
+
+    :hover {
+      text-decoration: underline;
+    }
+
+    &[disabled] {
+      color: rgb(150, 150, 150);
+    }
+  }
+
+  .set-page-size {
+    padding-top: 2px;
+    padding-left: 12px;
+  }
+
+  .page-numbers {
+    margin: 0 8px;
+
+    input {
+      width: 54px;
+      margin-top: 2px;
+    }
+  }
+}
 `;
 
 /**
- * Style object for Modal
+ * Style object for modal window
  * */
 const customModalStyles = {
   content: {
@@ -116,12 +158,26 @@ function Table({ columns, data }) {
     []
   );
 
+  const [pageIdx, setPageIdx] = useStore('pageIndex', 0);
+  const availablePageSizes = [5, 10, 20, 30, 40, 50, 75, 100];
+
   const {
     getTableProps,
     getTableBodyProps,
     headerGroups,
-    rows,
+    //rows,
     prepareRow,
+    // pagination
+    page,
+    canPreviousPage,
+    canNextPage,
+    pageOptions,
+    pageCount,
+    gotoPage,
+    nextPage,
+    previousPage,
+    setPageSize,
+    state: { pageIndex, pageSize }
   } = useTable(
     {
       columns,
@@ -129,10 +185,17 @@ function Table({ columns, data }) {
       autoResetSortBy: false,
       disableSortRemove: true,
       initialState: {
-        sortBy: sortByInitial
+        sortBy: sortByInitial,
+        pageIndex: pageIdx
       }
     },
-    useSortBy
+    useSortBy,
+    usePagination
+    );
+
+  console.log('pageCount', pageCount,
+    'previousPage', previousPage,
+    'nextPage', nextPage
   );
 
   return (
@@ -161,8 +224,7 @@ function Table({ columns, data }) {
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
-          {rows.map(
-            (row, i) => {
+          {page.map((row, i) => {
               prepareRow(row);
               return (
                 <tr {...row.getRowProps()}>
@@ -177,6 +239,58 @@ function Table({ columns, data }) {
           )}
         </tbody>
       </table>
+
+      {/* Pagination */}
+      <div className="pagination">
+        <button onClick={() => { setPageIdx(0); return gotoPage(0); }} disabled={!canPreviousPage}>
+          {'|<'}
+        </button>
+        <button onClick={() => { setPageIdx(pageIdx - 1); return previousPage() }} disabled={!canPreviousPage}>
+          {'<'}
+        </button>
+
+        <span className="page-numbers">
+          <input
+            type="number"
+            min="1"
+            max={pageCount}
+            value={pageIdx + 1}
+            onChange={e => {
+              const page = e.target.value ? Number(e.target.value) - 1 : 0;
+
+              setPageIdx(page);
+              gotoPage(page)
+            }} />
+          <span> z {pageOptions.length}</span>
+        </span>
+
+        <button onClick={() => { setPageIdx(pageIdx + 1); nextPage() }} disabled={!canNextPage}>
+          {'>'}
+        </button>
+        <button onClick={() => {
+          const lastPage = pageCount - 1;
+          setPageIdx(lastPage);
+          gotoPage(lastPage)
+        }} disabled={!canNextPage}>
+          {'>|'}
+        </button>
+
+        <div class="set-page-size">
+          Zobrazit{' '}
+          <select
+            value={pageSize}
+            onChange={e => {
+              setPageSize(Number(e.target.value))
+            }}>
+            {availablePageSizes.map(pageSize => (
+              <option key={pageSize} value={pageSize}>
+                {pageSize}
+              </option>
+            ))}
+          </select>
+          {' '}záznamů
+        </div>
+      </div>
     </>
   )
 }

@@ -2,6 +2,17 @@
     font-family: Roboto, "Segoe UI", sans-serif;
 }
 
+select, input {
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    border: 1px solid rgb(100, 100, 100);
+    padding-left: 8px;
+}
+    select:hover {
+        cursor: pointer;
+    }
+
 #nav-logo-text {
     font-size: 1.7rem;
 }
@@ -258,10 +269,6 @@ h2.client-name {
     border-radius: 10px;
     padding-left: 10px;
 }
-    #access-password:focus, .login-btn:focus {
-        box-shadow: none;
-        outline: 0 none;
-    }
 
 .login-btn {
     margin-left: 8px;
@@ -279,6 +286,10 @@ h2.client-name {
 }
     .login-btn:hover {
         background: #0094b1;
+    }
+    .login-btn:focus, input[type=text]:focus, input[type=number]:focus {
+        box-shadow: none;
+        outline: 0 none;
     }
 
 .client-info-table tr > td:first-child {
