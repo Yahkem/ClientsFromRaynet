@@ -1,4 +1,4 @@
-﻿import React, { useEffect } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import { useStore } from 'react-context-hook';
 import { ratingDisplay, d } from '../Helpers';
 import { LoadingElement } from './Subcomponents';
@@ -15,6 +15,7 @@ export function ClientDetail({ clientId }) {
   const [companyImageData, setCompanyImageData] = useStore('companyImageData', null);
   const [categories, setCategories] = useStore('categories');
   const [isDetailLoading, setIsDetailLoading] = useStore('isDetailLoading', false);
+  const [isImageLoading, setIsImageLoading] = useState(false);
 
   async function fetchData() {
     setIsDetailLoading(true);
@@ -38,6 +39,8 @@ export function ClientDetail({ clientId }) {
 
     if (company && company.logo && company.logo.id) {
       // fetch image
+      setIsImageLoading(true);
+
       const imageResponse = await fetch('https://app.raynet.cz/api/v2/image/' + company.logo.id, {
         method: 'GET',
         headers: {
@@ -50,6 +53,7 @@ export function ClientDetail({ clientId }) {
       const imageData = (await imageResponse.json()).imgData;
 
       setCompanyImageData(imageData);
+      setIsImageLoading(false);
     }
   }
 
@@ -111,9 +115,11 @@ export function ClientDetail({ clientId }) {
     <div className="modal-detail-body">
       {
         isDetailLoading ? <LoadingElement /> :
-          companyImageData === null ?
-            (<div className="no-client-image">Klient nemá žádný obrázek</div>)
-          : (<img src={companyImageData} alt="Obrázek/logo klienta" className="client-image" width="160" height="160" />)
+          isImageLoading ? <LoadingElement className="loading-img" /> :
+            companyImageData === null ?
+              (<div className="no-client-image">Klient nemá žádný obrázek</div>)
+              :
+              (<img src={companyImageData} alt="Obrázek/logo klienta" className="client-image" width="160" height="160" />)
       }
       {companyInfo}
     </div>);

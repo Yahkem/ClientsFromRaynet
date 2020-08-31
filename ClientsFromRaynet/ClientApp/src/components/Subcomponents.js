@@ -2,11 +2,12 @@
 import { useStore } from 'react-context-hook';
 
 
-export function LoadingElement() {
-  const loadingElement = <div className="loading-div"><div className="lds-dual-ring" ></div></div>;
+export function LoadingElement({ className }) {
+  const loadingElement = <div className={className + " loading-div"}><div className="lds-dual-ring"></div></div>;
 
   return loadingElement;
 }
+
 
 export function SearchBox() {
   //const [searchValue, setSearchValue] = useState(searchValue2);

@@ -200,8 +200,18 @@
         animation: lds-dual-ring 1.2s linear infinite;
     }
 
-@keyframes lds-dual-ring {
-    0% {
+.loading-img {
+    height: 160px;
+    width: 160px;
+    position: relative;
+    float: left;
+}
+    .loading-img > .lds-dual-ring {
+        margin-top: 40px;
+    }
+
+    @keyframes lds-dual-ring {
+        0% {
         transform: rotate(0deg);
     }
 

@@ -64,11 +64,10 @@ export function AddressesInfo({ addresses }) {
       {d(addr.street)}<br />
       <span className="label-client">Město:&nbsp;</span>
       {d(addr.city)}<br />
-      <span className="label-client">Kraj:&nbsp;</span>
-      {d(addr.region)}
-      &emsp;
       <span className="label-client">PSČ:&nbsp;</span>
       {d(addr.zipCode)}<br />
+      <span className="label-client">Kraj:&nbsp;</span>
+      {d(addr.province)}<br />
       <span className="label-client">Země:&nbsp;</span>
       {d(addr.country)}<br />
       <span className="label-client">GPS:&nbsp;</span>
@@ -109,7 +108,7 @@ export function AddressesInfo({ addresses }) {
         </>)
       }
 
-      <span className="label-client">www:&nbsp;</span>
+      <span className="label-client">WWW:&nbsp;</span>
       {!!contact.www ?
         (<a href={formatHref(contact.www)} target="_blank" rel="noopener noreferrer">{contact.www}</a>)
         : d(contact.www)
@@ -133,9 +132,11 @@ export function AddressesInfo({ addresses }) {
     </div>);
   }
 
+  const isPrimaryAlsoContact = contactAddressInfo === primaryAddressInfo;
+
   return (<>
-    <AddressInfo addrInfo={primaryAddressInfo} otherInfo="Hlavní adresa" />
-    {contactAddressInfo !== primaryAddressInfo && <AddressInfo addrInfo={contactAddressInfo} otherInfo="Kontaktní adresa" />}
+    {!isPrimaryAlsoContact && <AddressInfo addrInfo={primaryAddressInfo} />}
+    <AddressInfo addrInfo={contactAddressInfo} otherInfo={(!isPrimaryAlsoContact || otherAdressesInfo.length > 0) ? "Kontaktní adresa" : null} />
     {otherAdressesInfo.map((a) => <AddressInfo addrInfo={a} key={a.address.id} />)}
   </>);
 }
