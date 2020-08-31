@@ -193,8 +193,7 @@
         width: 64px;
         height: 64px;
         margin: 8px;
-        background: transparent;
-        box-shadow: 0 0 10px 1px #00b6d4;
+        background: rgba(255, 255, 255, 0.4);
         border-radius: 50%;
         border: 4px solid #00b6d4;
         border-color: #00b6d4 transparent #00b6d4 transparent;

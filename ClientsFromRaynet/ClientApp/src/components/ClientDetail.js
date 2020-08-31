@@ -13,7 +13,7 @@ export function ClientDetail({ clientId }) {
   const [appUrl] = useStore('appUrl', 'https://app.raynet.cz/api/v2/company/');
   const [selectedCompany, setSelectedCompany] = useStore('selectedCompany');
   const [companyImageData, setCompanyImageData] = useStore('companyImageData', null);
-  const [categories, setCategories] = useStore('categories');
+  const [categories] = useStore('categories');
   const [isDetailLoading, setIsDetailLoading] = useStore('isDetailLoading', false);
   const [isImageLoading, setIsImageLoading] = useState(false);
 
