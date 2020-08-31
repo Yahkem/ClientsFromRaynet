@@ -3,7 +3,9 @@ import { useStore } from 'react-context-hook';
 
 
 export function LoadingElement({ className }) {
-  const loadingElement = <div className={className + " loading-div"}><div className="lds-dual-ring"></div></div>;
+  className = !!className ? (className + ' ') : '';
+
+  const loadingElement = <div className={className + "loading-div"}><div className="lds-dual-ring"></div></div>;
 
   return loadingElement;
 }
