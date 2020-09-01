@@ -16,6 +16,7 @@ export function ClientDetail({ clientId }) {
   const [categories] = useStore('categories');
   const [isDetailLoading, setIsDetailLoading] = useStore('isDetailLoading', false);
   const [isImageLoading, setIsImageLoading] = useState(false);
+  const [useModal, setUseModal] = useStore('useModal');
 
   async function fetchData() {
     setIsDetailLoading(true);
@@ -133,16 +134,21 @@ export function ClientDetail({ clientId }) {
     </>)
     :
     <i></i>;
-
+  
   return (
     <div className="modal-detail-body">
       {
         isDetailLoading ? <LoadingElement /> :
           isImageLoading ? <LoadingElement className="loading-img" /> :
-            clientImageData === null ?
-              (<div className="no-client-image">Klient nemá žádný obrázek</div>)
+            clientImageData !== null ?
+              (<img src={clientImageData}
+                alt="Obrázek/logo klienta"
+                className="client-image"
+                width="160" height="160" />)
               :
-              (<img src={clientImageData} alt="Obrázek/logo klienta" className="client-image" width="160" height="160" />)
+              (useModal || selectedClient) ?
+                (<div className="no-client-image">Klient nemá žádný obrázek</div>)
+                : ''
       }
       {clientInfo}
     </div>);

@@ -1,13 +1,12 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router';
-import { Layout } from './components/Layout';
 import { withStore, useStore } from 'react-context-hook';
-import { ClientList } from './components/ClientList';
-
-import './custom.css'
-
 import Modal from 'react-modal';
+import { Layout } from './components/Layout';
+import { ClientList } from './components/ClientList';
 import { Login } from './components/Login';
+
+import './custom.css';
 
 // Make sure to bind modal to your appElement (http://reactcommunity.org/react-modal/accessibility/)
 Modal.setAppElement('#root')

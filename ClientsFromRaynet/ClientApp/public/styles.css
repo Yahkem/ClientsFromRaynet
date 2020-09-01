@@ -13,7 +13,7 @@ select, input {
         cursor: pointer;
     }
 
-button:focus, input[type=text]:focus, input[type=number]:focus {
+button:focus, input[type=text]:focus, input[type=number]:focus, input[type=checkbox]:focus {
     box-shadow: none;
     outline: 0 none !important;
 }
@@ -58,15 +58,28 @@ button:focus, input[type=text]:focus, input[type=number]:focus {
     white-space: nowrap;
 }
 
-@media (min-width: 1200px) {
-    #table-container, #nav-container {
-        max-width: 1150px;
-    }
-}
 
 @media (min-width: 1500px) {
     #table-container, #nav-container {
         max-width: 1400px;
+    }
+}
+
+@media (min-width: 1400px) and (max-width: 1500px) {
+    #table-container, #nav-container {
+        max-width: 1350px;
+    }
+}
+
+@media (min-width: 1300px) and (max-width: 1400px) {
+    #table-container, #nav-container {
+        max-width: 1250px;
+    }
+}
+
+@media (min-width: 1200px) and (max-width: 1300px) {
+    #table-container, #nav-container {
+        max-width: 1150px;
     }
 }
 
@@ -139,6 +152,7 @@ button:focus, input[type=text]:focus, input[type=number]:focus {
     margin-bottom: 8px;
     max-width: 500px;
     padding-left: 12px;
+    min-height: 160px;
 }
 
 h2.client-name {
@@ -154,7 +168,8 @@ h2.client-name {
 
 .modal-detail-body {
     width: 680px;
-    height: 680px;
+    min-height: 600px;
+    max-height: 700px;
 }
     .modal-detail-body hr {
         margin: 0.65rem 0;
@@ -193,6 +208,16 @@ h2.client-name {
 .client-info-table tr > td:nth-child(2n) {
     word-break: break-all;
     vertical-align: top;
+}
+
+.table-left-side {
+    overflow-x: auto;
+}
+
+.detail-right-side .client-info-table th, .detail-right-side .client-info-table td {
+    border: none !important;
+    padding: 0 !important;
+    overflow: hidden;
 }
 
 

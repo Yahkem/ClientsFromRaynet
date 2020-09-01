@@ -1,14 +1,14 @@
 ﻿import React, { useEffect } from 'react';
-import { useTable, useSortBy, usePagination } from 'react-table';
+import Modal from 'react-modal';
 import styled from 'styled-components';
-import { enumDisplayString, Role, State, colorHexForState } from './../Enums';
 import { NavLink } from 'reactstrap';
 import { Link, useParams} from 'react-router-dom';
 import { useStore } from 'react-context-hook';
-import Modal from 'react-modal';
+import { useTable, useSortBy, usePagination } from 'react-table';
+import { enumDisplayString, Role, State, colorHexForState } from './../Enums';
 import { ClientDetail } from './ClientDetail';
 import { getColorForCategory } from '../Helpers';
-import { LoadingElement, SearchBox } from './Subcomponents';
+import { LoadingElement, SearchBox, UseModalSwitch } from './Subcomponents';
 
 const Styles = styled.div`
 padding: 1rem;
@@ -296,8 +296,9 @@ export function ClientList() {
   const [username] = useStore('username', 'risul.kubny@centrum.cz');
   const [apiKey] = useStore('apiKey', 'crm-9c4fde5a37a847c79aae988a7b7528c7');
   const [appUrl] = useStore('appUrl', 'https://app.raynet.cz/api/v2/company/');
-  const [selectedClient, setSelectedClient] = useStore('selectedClient', null);
+  const [selectedClient, setSelectedClient] = useStore('selectedClient');
   const [categories, setCategories] = useStore('categories', companyCategories);
+  const [useModal, setUseModal] = useStore('useModal', true);
 
   if (isFirstLoad) {
     // Load company categories during 1st load
@@ -371,8 +372,7 @@ export function ClientList() {
             <NavLink tag={Link} className="text-link"
               to={{ pathname: url, state: client }}
               onClick={() => {
-                setSelectedClient(client);
-                setIsModalOpened(true);
+                setIsModalOpened(useModal);
               }}>
               {val}
             </NavLink>
@@ -455,25 +455,44 @@ export function ClientList() {
     fetchData();
   }, [searchValue]);
 
+  const noModalVersion = (
+    <div className="row">
+      <div className="col-md-9 table-left-side">
+        {isLoading && <LoadingElement />}
+        <Table columns={columns} data={companies} />
+      </div>
+      <div className="col-md-3 detail-right-side">
+        <ClientDetail clientId={clientId} />
+      </div>
+    </div>);
+
+  const modalVersion = (<>
+    { isLoading && <LoadingElement />}
+    <Table columns={columns} data={companies} />
+
+    <Modal
+      isOpen={isModalOpened}
+      style={customModalStyles}
+      onRequestClose={(e) => { setIsModalOpened(false); }}
+      contentLabel="Client info modal">
+      <div className="container">
+        <div className="row modal-header-row">
+          <button id="close-modal-btn" onClick={() => { setIsModalOpened(false); }}>&#10005;</button>
+        </div>
+      </div>
+      <ClientDetail clientId={clientId} />
+    </Modal>
+  </>);
+
   return (
     <Styles>
       <SearchBox />
+      <UseModalSwitch useModal={useModal} setUseModal={setUseModal} />
 
-      {isLoading && <LoadingElement />}
-      <Table columns={columns} data={companies} />
+      {
+        useModal ? modalVersion : noModalVersion
+      }
 
-      <Modal
-        isOpen={isModalOpened}
-        style={customModalStyles}
-        onRequestClose={(e) => { setIsModalOpened(false); }}
-        contentLabel="Client info modal">
-        <div className="container">
-          <div className="row modal-header-row">
-            <button id="close-modal-btn" onClick={() => { setIsModalOpened(false); }}>&#10005;</button>
-          </div>
-        </div>
-        <ClientDetail clientId={clientId} />
-      </Modal>
     </Styles>
   );
 }
