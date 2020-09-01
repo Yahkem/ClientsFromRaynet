@@ -22,7 +22,7 @@ export function ratingDisplay(c: string) {
  */
 export const d = (x: any) => !!x ? x : '';
 
-export const formatValueObj = (obj: { value: string }) => {
+export const formatValueObject = (obj: { id: number, value: string }) => {
   if (obj === void 0 || obj === null || obj.value === null) {
     return d(null);
   }

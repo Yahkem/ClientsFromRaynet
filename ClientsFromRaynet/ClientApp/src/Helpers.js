@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.hashFunc = exports.formatDate = exports.formatLatLng = exports.formatYesNo = exports.formatValueObj = exports.d = exports.ratingDisplay = exports.getColorForCategory = void 0;
+exports.hashFunc = exports.formatDate = exports.formatLatLng = exports.formatYesNo = exports.formatValueObject = exports.d = exports.ratingDisplay = exports.getColorForCategory = void 0;
 function getColorForCategory(name, categories) {
     for (var _i = 0, categories_1 = categories; _i < categories_1.length; _i++) {
         var c = categories_1[_i];
@@ -24,7 +24,7 @@ exports.ratingDisplay = ratingDisplay;
  * Helper for null display
  */
 exports.d = function (x) { return !!x ? x : ''; };
-exports.formatValueObj = function (obj) {
+exports.formatValueObject = function (obj) {
     if (obj === void 0 || obj === null || obj.value === null) {
         return exports.d(null);
     }

@@ -1,6 +1,6 @@
 ﻿import React, { useEffect, useState } from 'react';
 import { useStore } from 'react-context-hook';
-import { ratingDisplay, d } from '../Helpers';
+import { ratingDisplay, d, formatValueObject } from '../Helpers';
 import { LoadingElement } from './Subcomponents';
 import { SocialNetworkContacts } from './SocialNetworkContacts';
 import { AddressesInfo } from './AddressesInfo';
@@ -74,8 +74,8 @@ export function ClientDetail({ clientId }) {
         <table className="client-info-table">
           <tbody>
           {
-            selectedClient.person &&
-              <tr>
+            selectedClient.person ?
+              (<tr>
                 <td>
                   <span className="label-client">Jméno:</span>
                 </td>
@@ -88,7 +88,16 @@ export function ClientDetail({ clientId }) {
                 <td>
                   <strong className="client-surname">{d(selectedClient.lastName)}</strong>
                 </td>
-              </tr>
+              </tr>)
+              :
+              (<tr>
+                  <td>
+                    <span className="label-client">Právní&nbsp;forma:</span>
+                  </td>
+                  <td>
+                    <strong colSpan="3">{formatValueObject(selectedClient.legalForm)}</strong>
+                  </td>
+                </tr>)
             }
             <tr>
               <td>

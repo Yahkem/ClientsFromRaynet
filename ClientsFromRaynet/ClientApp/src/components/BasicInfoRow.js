@@ -1,5 +1,5 @@
 ﻿import React from 'react';
-import { d, formatValueObj, formatDate, formatYesNo, getColorForCategory } from '../Helpers';
+import { d, formatValueObject, formatDate, formatYesNo, getColorForCategory } from '../Helpers';
 import { colorHexForState, enumDisplayString, Role, State } from '../Enums';
 
 
@@ -37,7 +37,7 @@ export function BasicInfoRow({ client, categories }) {
             <td>
               <span style={{ backgroundColor: '#' + categoryColor }}
                 className={categoryColor ? "category-cell" : ""}>
-                {formatValueObj(client.category)}
+                {formatValueObject(client.category)}
               </span>
             </td>
           </tr>
@@ -46,15 +46,7 @@ export function BasicInfoRow({ client, categories }) {
               <span className="label-client">Obor:</span>
             </td>
             <td>
-              <span>{formatValueObj(client.economyActivity)}</span>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <span className="label-client">Zdroj&nbsp;kontaktu:</span>
-            </td>
-            <td>
-              <span>{formatValueObj(client.contactSource)}</span>
+              <span>{formatValueObject(client.economyActivity)}</span>
             </td>
           </tr>
           <tr>
@@ -73,6 +65,14 @@ export function BasicInfoRow({ client, categories }) {
               <span>{d(client.taxNumber)}</span>
             </td>
           </tr>
+          <tr>
+            <td>
+              <span className="label-client">Zdroj&nbsp;kontaktu:</span>
+            </td>
+            <td>
+              <span>{formatValueObject(client.contactSource)}</span>
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -81,18 +81,10 @@ export function BasicInfoRow({ client, categories }) {
         <tbody>
           <tr>
             <td>
-              <span className="label-client">Oslovení:</span>
-            </td>
-            <td>
-              <span>{d(client.salutation)}</span>
-            </td>
-          </tr>
-          <tr>
-            <td>
               <span className="label-client">Obrat:</span>
             </td>
             <td>
-              <span>{formatValueObj(client.turnover)}</span>
+              <span>{formatValueObject(client.turnover)}</span>
             </td>
           </tr>
           <tr>
@@ -100,7 +92,7 @@ export function BasicInfoRow({ client, categories }) {
               <span className="label-client">Zaměstnanců:</span>
             </td>
             <td>
-              <span>{formatValueObj(client.employeesNumber)}</span>
+              <span>{formatValueObject(client.employeesNumber)}</span>
             </td>
           </tr>
           <tr>
@@ -116,7 +108,7 @@ export function BasicInfoRow({ client, categories }) {
               <span className="label-client">Platební&nbsp;podmínky:</span>
             </td>
             <td>
-              <span>{formatValueObj(client.paymentTerm)}</span>
+              <span>{formatValueObject(client.paymentTerm)}</span>
             </td>
           </tr>
           <tr>
@@ -125,6 +117,14 @@ export function BasicInfoRow({ client, categories }) {
             </td>
             <td>
               <span>{formatYesNo(client.taxPayer)}</span>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <span className="label-client">Oslovení:</span>
+            </td>
+            <td>
+              <span>{d(client.salutation)}</span>
             </td>
           </tr>
           <tr>
