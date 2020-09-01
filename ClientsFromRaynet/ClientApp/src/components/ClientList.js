@@ -157,6 +157,7 @@ function Table({ columns, data }) {
     getTableBodyProps,
     headerGroups,
     prepareRow,
+    rows,
     page,
     canPreviousPage,
     canNextPage,
@@ -189,11 +190,8 @@ function Table({ columns, data }) {
           {headerGroups.map(headerGroup => (
             <tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map(column => (
-                // Add the sorting props to control sorting. For this example
-                // we can add them into the header props
                 <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                   {column.render('Header')}
-                  {/* Add a sort direction indicator */ }
                   <span>
                     {column.isSorted
                       ? column.isSortedDesc
@@ -266,7 +264,17 @@ function Table({ columns, data }) {
           <select
             value={pageSize}
             onChange={e => {
-              setPageSize(Number(e.target.value))
+              // Fix behavior (for example): 10->5 rows per page when page==2 and rows.length==14
+              // then stay on page No.2 and enable buttons (max. pages 3 - otherwise are disabled)
+              const newPageSize = Number(e.target.value);
+              const shouldSetLastPage = (pageIdx * newPageSize) > rows.length;
+              const newPage = shouldSetLastPage ?
+                Math.floor(rows.length / newPageSize)
+                : pageIdx;
+
+              setPageSize(newPageSize);
+              setPageIdx(newPage);
+              gotoPage(newPage);
             }}>
             {availablePageSizes.map(pageSize => (
               <option key={pageSize} value={pageSize}>
@@ -296,7 +304,6 @@ export function ClientList() {
   const [username] = useStore('username', 'risul.kubny@centrum.cz');
   const [apiKey] = useStore('apiKey', 'crm-9c4fde5a37a847c79aae988a7b7528c7');
   const [appUrl] = useStore('appUrl', 'https://app.raynet.cz/api/v2/company/');
-  const [selectedClient, setSelectedClient] = useStore('selectedClient');
   const [categories, setCategories] = useStore('categories', companyCategories);
   const [useModal, setUseModal] = useStore('useModal', true);
 
@@ -487,12 +494,9 @@ export function ClientList() {
   return (
     <Styles>
       <SearchBox />
-      <UseModalSwitch useModal={useModal} setUseModal={setUseModal} />
+      <UseModalSwitch />
 
-      {
-        useModal ? modalVersion : noModalVersion
-      }
-
+      { useModal ? modalVersion : noModalVersion }
     </Styles>
   );
 }

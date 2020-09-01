@@ -1,23 +1,14 @@
 ﻿import React, { useState } from 'react';
 import { useStore } from 'react-context-hook';
 import { useHistory } from 'react-router-dom';
+import { hashFunc } from '../Helpers';
 
 export function Login() {
   const [isLoggedIn, setIsLoggedIn] = useStore('isLoggedIn');
   const [invalidPw, setInvalidPw] = useState(false);
   const history = useHistory();
   const hashValue = 1417606992;
-
-  function hashFunc(str) {
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-      const chr = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + chr;
-      hash |= 0; // Convert to 32bit integer
-    }
-    return hash;
-  }
-
+  
   const onButtonClick = () => {
     const inputValue = document.getElementById('access-password').value;
     const hashedInput = hashFunc(inputValue);

@@ -39,7 +39,7 @@ export function ClientDetail({ clientId }) {
     setIsDetailLoading(false);
 
     if (client && client.logo && client.logo.id) {
-      // fetch image
+      // Fetch image
       setIsImageLoading(true);
 
       const imageResponse = await fetch('https://app.raynet.cz/api/v2/image/' + client.logo.id, {

@@ -79,15 +79,15 @@ export function LoadingElement({ className }) {
 
 
 export function SearchBox() {
-  //const [searchValue, setSearchValue] = useState(searchValue2);
   const [searchValue, setSearchValue] = useStore('searchValue', null);
+  const debounceTimeInMs = 650;
 
   let timeoutHandle = null;
   const debounceSearchValue = function (inputEl) {
     clearTimeout(timeoutHandle);
     timeoutHandle = setTimeout(() => {
       setSearchValue(inputEl.value);
-    }, 700);
+    }, debounceTimeInMs);
   }
 
   const searchBoxInputEl = (<input type="text"
@@ -101,7 +101,8 @@ export function SearchBox() {
 /**
  * Checkbox for switching between modal version and detail-on-left-side version
  * */
-export function UseModalSwitch({ useModal, setUseModal }) {
+export function UseModalSwitch() {
+  const [useModal, setUseModal] = useStore('useModal', true);
   const [isModalOpened, setIsModalOpened] = useStore('isModalOpened');
 
   return (<CheckboxStyles>
